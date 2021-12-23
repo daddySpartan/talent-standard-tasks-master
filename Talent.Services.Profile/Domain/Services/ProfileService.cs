@@ -98,6 +98,7 @@ namespace Talent.Services.Profile.Domain.Services
                     existingTalent.Description = model.Description;
                     existingTalent.Address = model.Address;
                     existingTalent.Nationality = model.Nationality;
+
                     var newLanguages = new List<UserLanguage>();
                     foreach (var item in model.Languages)
                     {

@@ -24,6 +24,7 @@ export default class AccountProfile extends React.Component {
 
         this.state = {
             profileData: {
+                languages: [],
                 //skills: [],
                 /*firstName: '',
                 lastName: '',
@@ -58,6 +59,7 @@ export default class AccountProfile extends React.Component {
         this.updateWithoutSave = this.updateWithoutSave.bind(this)
         this.updateAndSaveData = this.updateAndSaveData.bind(this)
         this.updateForComponentId = this.updateForComponentId.bind(this)
+        this.updateListComponentId= this.updateListComponentId.bind(this)
         this.saveProfile = this.saveProfile.bind(this)
         this.loadData = this.loadData.bind(this)
         this.init = this.init.bind(this);
@@ -115,6 +117,7 @@ export default class AccountProfile extends React.Component {
         this.setState({
             profileData: newProfile
         }, this.saveProfile)
+        console.log(newProfile)
         
     }
 
@@ -122,8 +125,18 @@ export default class AccountProfile extends React.Component {
         let data = {};
         data[componentId] = newValues;
        this.updateAndSaveData(data)
+       console.log(data)
     }
 
+    updateListComponentId(componentId, newValues) {
+        let list = this.state.profileData.languages;
+        let data = list.push(newValues)
+       
+       // data[componentId] = newValues;
+       this.updateAndSaveData(data)
+       console.log(data)
+    }
+   
     saveProfile() {
         var cookies = Cookies.get('talentAuthToken');
         $.ajax({
@@ -206,6 +219,8 @@ export default class AccountProfile extends React.Component {
                                             <Language
                                                 languageData={this.state.profileData.languages}
                                                 updateProfileData={this.updateAndSaveData}
+                                                controlFunc={this.updateForComponentId}
+                                                componentId="languages"
                                             />
                                         </FormItemWrapper>
                                         {/*<FormItemWrapper
