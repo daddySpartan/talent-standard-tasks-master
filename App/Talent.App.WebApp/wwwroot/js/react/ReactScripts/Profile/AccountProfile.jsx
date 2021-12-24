@@ -59,7 +59,7 @@ export default class AccountProfile extends React.Component {
         this.updateWithoutSave = this.updateWithoutSave.bind(this)
         this.updateAndSaveData = this.updateAndSaveData.bind(this)
         this.updateForComponentId = this.updateForComponentId.bind(this)
-        this.updateListComponentId= this.updateListComponentId.bind(this)
+        //this.updateListComponentId= this.updateListComponentId.bind(this)
         this.saveProfile = this.saveProfile.bind(this)
         this.loadData = this.loadData.bind(this)
         this.init = this.init.bind(this);
@@ -128,14 +128,17 @@ export default class AccountProfile extends React.Component {
        console.log(data)
     }
 
-    updateListComponentId(componentId, newValues) {
-        let list = this.state.profileData.languages;
-        let data = list.push(newValues)
-       
+/*    updateListComponentId(componentId, newValues) {
+        //let list = this.state.profileData.languages;
+        //let data = list.push(newValues)
+        this.setState(previousState => ({
+            profileData: [...previousState.profileData.languages, newLanguage]
+        }));
+      
        // data[componentId] = newValues;
        this.updateAndSaveData(data)
        console.log(data)
-    }
+    }*/
    
     saveProfile() {
         var cookies = Cookies.get('talentAuthToken');

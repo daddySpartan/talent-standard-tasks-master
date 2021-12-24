@@ -7,7 +7,7 @@ import EditLanguage from './EditLanguage.jsx';
 export default class Language extends React.Component {
     constructor(props) {
         super(props);
-        /*const lists = props.languageData  ? [[], props.languageData]
+        const data = props.languageData  /*? [[], props.languageData]
         : 
             {
                 //id: "",
@@ -17,8 +17,9 @@ export default class Language extends React.Component {
          
 
         this.state = {
-            //newList: lists,
-            newList: [],
+            list: data,
+            newLanguage:  {language: "",  languageLevel: ""},
+            //newList: [],
             summchar: 0,
             descchar: 0,
             showAdd: false,
@@ -28,57 +29,69 @@ export default class Language extends React.Component {
         this.closeAdd = this.closeAdd.bind(this)
         this.openEdit = this.openEdit.bind(this)
         this.closeEdit = this.closeEdit.bind(this)
-        this.saveLanguage = this.saveLanguage.bind(this)
-       
+        //this.saveLanguage = this.saveLanguage.bind(this)
+        this.updateLanguage = this.updateLanguage.bind(this)
+        
 
     }
-    openAdd() {
+    openAdd () {
         this.setState({
             showAdd: true,
         })
-        console.log(this.state.newList)
+        console.log(this.state.list)
     }
 
-    closeAdd() {
+    closeAdd () {
         this.setState({
             showAdd: false
         })
     }
 
-    openEdit() {
+    openEdit () {
         this.setState({
             showEdit: true,
         })
     }
 
-    closeEdit() {
+    closeEdit () {
         this.setState({
             showEdit: false
         })
     }
 
-    saveLanguage(newLanguage) {
+    updateLanguage(newLang)  {
       
-        //const list = this.state.newList
-        //const data = list.push(newLanguage)
-        this.setState(previousState => ({
-            newList: [...previousState.newList, newLanguage]
-        }));
-        this.props.controlFunc(this.props.componentId, this.state.newList)
-        console.log(newLanguage)
-        console.log(this.state.newList)
-        //this.props.updateProfileData(this.state.newList)
+        this.setState(state => {
+            const list = [...state.list, newLang];
+      
+            return {
+              list,
+              newLanguage: newLang,
+            };
+          });
+
+        //this.saveLanguage
+        console.log(newLang)
+        console.log(this.state.list)
+        //this.props.updateProfileData(this.state.list)
+        this.props.controlFunc(this.props.componentId, this.state.list)
         this.closeAdd()
         this.closeEdit()
     }
 
+    /*saveLanguage = () => {
+
+        this.props.controlFunc(this.props.componentId, this.state.list)
+
+    }
+*/
 
 
     render() {
-        const {newList} = this.state
+        const {list} = this.state
         return (
             <React.Fragment>
-                <AddLanguage showAdd={this.state.showAdd} closeAdd={this.closeAdd} updateLanguage={this.saveLanguage}/>
+                <AddLanguage showAdd={this.state.showAdd} closeAdd={this.closeAdd} updateLanguage={this.updateLanguage}/>
                 <div className="sixteen wide column">
                 
                 <table className="ui single line table">
@@ -90,9 +103,9 @@ export default class Language extends React.Component {
                         </tr>
                     </thead>
                     <tbody className="">
-                        {newList.map((l) => {
+                        {(list || []).map((l) => {
 
-                            return this.state.showEdit ?  (<EditLanguage showEdit={this.state.showEdit} closeEdit={this.closeEdit} updateLanguage={this.saveLanguage} currentLanguage={l}/>)
+                            return this.state.showEdit ?  (<EditLanguage showEdit={this.state.showEdit} closeEdit={this.closeEdit} updateLanguage={this.updateLanguage} currentLanguage={l}/>)
                                 :
                             (
                                 <tr className="" key={l.id}>
