@@ -6,13 +6,18 @@ import  {Select } from '../Form/Select.jsx';
 export default class EditLanguage extends React.Component {
     constructor(props) {
         super(props);
-        const editlanguage = props.currentLanguage
+        const editlanguage = props.currentLanguage ?
+        Object.assign({},props.currentLanguage) : 
+        {
+            id: "",
+            userId: "",
+            language: "",
+            languageLevel: "",
+        }
 
-        this.state = {
-            newL: { 
-                language: editlanguage.language,
-                languageLevel:editlanguage.languageLevel,
-            },
+
+        this.state = {       
+            newL: editlanguage
         }
         this.renderEdit = this.renderEdit.bind(this)
         this.renderClose = this.renderClose.bind(this)
@@ -32,15 +37,17 @@ export default class EditLanguage extends React.Component {
 
     saveChange() {
         const data = this.state.newL
-        this.props.updateLanguage(data)
-        this.props.closeEdit
-
+        const id = this.state.newL.id
+        this.props.closeEdit()
+        this.props.updateLanguage(data,id)       
     }
 
 
 
 
     render() {
+        //console.log(this.props.showEdit)
+        //console.log(this.props.keyId)
         return (
             this.props.showEdit ? this.renderEdit() : this.renderClose()
         )
@@ -57,42 +64,49 @@ export default class EditLanguage extends React.Component {
         ]
     
 
-    return(
-        <React.Fragment>
-            <div className="row">
-                <div className="five wide column">
-                    <ChildSingleInput
-                        inputType="text"                       
-                        name="language"
-                        value={this.state.newL.language}
-                        controlFunc={this.handleChange}
-                        maxLength={20}
-                        placeholder={this.state.newL.language}
-                        errorMessage="Please enter a valid language"
-                    />
-                </div>
-                <div className="five wide column">
-                    <Select                         
-                        placeholder={this.state.newL.languageLevel}
-                        value={this.state.newL.languageLevel}
-                        controlFunc={this.handleChange}
-                        name="languageLevel"
-                        options= {levelOptions}
-                    />
-                </div>
+        return(
+            <React.Fragment>
 
-                <div className = "six wide column" >       
-                    <button type="button" className="ui basic blue button" onClick={this.saveChange}>Update</button>
-                    <button type="button" className="ui basic red button" onClick={this.props.closeEdit}>Cancel</button>
-                </div>  
-            </div>
-        </React.Fragment>
-        
-    )}
+                <tr className="" >
+                    <td className="">
+                        <ChildSingleInput
+                            inputType="text"                       
+                            name="language"
+                            value={this.props.currentLanguage.language}
+                            controlFunc={this.handleChange}
+                            maxLength={20}
+                            placeholder={this.props.currentLanguage.language}
+                            errorMessage="Please enter a valid language"
+                        />                        
+                    </td>
+                    <td className="">
+                        <Select                         
+                            placeholder={this.props.currentLanguage.languageLevel}
+                            value={this.props.currentLanguage.languageLevel}
+                            controlFunc={this.handleChange}
+                            name="languageLevel"
+                            options= {levelOptions}
+                        />
+                        
+                    </td>
+                    <td className="">
+                        <button type="button" className="ui basic blue button" onClick={this.saveChange}>Update</button>
+                        <button type="button" className="ui basic red button" onClick={() => this.props.closeEdit()}>Cancel</button>
+                                     
+                    </td>                   
+                </tr>    
+
+
+             </React.Fragment>       
+        )
+    }
 
     renderClose() {
-
-    return(null)}
+        //console.log(this.props.showEdit)
+        //console.log(this.props.currentId)
+        this.props.closeEdit()
+        return (null)
+    }
 
 
 }

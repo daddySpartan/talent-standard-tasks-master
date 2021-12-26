@@ -4,10 +4,19 @@ import Cookies from 'js-cookie';
 import AddLanguage from './AddLanguage.jsx';
 import EditLanguage from './EditLanguage.jsx';
 
-export default class Language extends React.Component {
+export class Language extends React.Component {
     constructor(props) {
         super(props);
-        const data = props.languageData  /*? [[], props.languageData]
+        /*const newArr = props.languageData.map(function(val) {            
+            return {
+              id: val.id,
+              language: val.language,
+              languageLevel: val.languageLevel,
+              userid: val.userid
+            };
+          });*/
+        //const newArr = props.languageData
+        /*const data = props.languageData  ? [[], props.languageData]
         : 
             {
                 //id: "",
@@ -17,28 +26,32 @@ export default class Language extends React.Component {
          
 
         this.state = {
-            list: data,
-            newLanguage:  {language: "",  languageLevel: ""},
-            //newList: [],
+            newL: {
+                language: "",
+                languageLevel: "",
+                id: "",
+                userId: "",
+            },
             summchar: 0,
             descchar: 0,
             showAdd: false,
             showEdit: false,
+            keyId: 0
         }
         this.openAdd = this.openAdd.bind(this)
         this.closeAdd = this.closeAdd.bind(this)
         this.openEdit = this.openEdit.bind(this)
         this.closeEdit = this.closeEdit.bind(this)
-        //this.saveLanguage = this.saveLanguage.bind(this)
         this.updateLanguage = this.updateLanguage.bind(this)
-        
-
+        this.addLanguage = this.addLanguage.bind(this)
+        this.deleteLanguage = this.deleteLanguage.bind(this)
     }
+
     openAdd () {
         this.setState({
             showAdd: true,
         })
-        console.log(this.state.list)
+        console.log(this.props.languageData)
     }
 
     closeAdd () {
@@ -47,51 +60,74 @@ export default class Language extends React.Component {
         })
     }
 
-    openEdit () {
+    openEdit (currentlevel,currentlanguage,currentid,currentuserid) {
         this.setState({
             showEdit: true,
+            keyId: currentid,
+            newL: {
+                language: currentlanguage,
+                languageLevel: currentlevel,
+                id: currentid,
+                userId: currentuserid
+            }
         })
     }
 
     closeEdit () {
         this.setState({
-            showEdit: false
+            showEdit: false,
+            keyId: 0
         })
     }
 
-    updateLanguage(newLang)  {
-      
-        this.setState(state => {
-            const list = [...state.list, newLang];
-      
+   addLanguage(newLang)  {
+        const list = [...this.props.languageData, newLang];
+        this.setState(state => {     
             return {
-              list,
-              newLanguage: newLang,
+              newL: newLang,
             };
           });
 
-        //this.saveLanguage
-        console.log(newLang)
-        console.log(this.state.list)
+        //console.log(newLang)
+        //console.log(this.state.list)
         //this.props.updateProfileData(this.state.list)
-        this.props.controlFunc(this.props.componentId, this.state.list)
+        this.props.controlFunc(this.props.componentId, list)
         this.closeAdd()
+        
+    }
+
+    updateLanguage (newLang,idLang) {
+        const list = this.props.languageData.map((item) => {
+            if (item.id === idLang) {
+              return newLang;
+            } else {             
+              return item;
+            }
+          });
+        this.props.controlFunc(this.props.componentId,list)     
         this.closeEdit()
-    }
-
-    /*saveLanguage = () => {
-
-        this.props.controlFunc(this.props.componentId, this.state.list)
 
     }
-*/
+
+    deleteLanguage (idLang) {
+        const list = this.props.languageData.filter((item) => item.id !== idLang);  
+        this.props.controlFunc(this.props.componentId,list)     
+        this.closeEdit()
+
+    }
 
 
     render() {
-        const {list} = this.state
+        const list = this.props.languageData
+        const {newL,keyId,showEdit} = this.state
+
+        if (!list) {
+            return <div />
+        }
         return (
             <React.Fragment>
-                <AddLanguage showAdd={this.state.showAdd} closeAdd={this.closeAdd} updateLanguage={this.updateLanguage}/>
+                
+                <AddLanguage showAdd={this.state.showAdd} closeAdd={this.closeAdd} addLanguage={this.addLanguage}/>
                 <div className="sixteen wide column">
                 
                 <table className="ui single line table">
@@ -103,25 +139,25 @@ export default class Language extends React.Component {
                         </tr>
                     </thead>
                     <tbody className="">
-                        {(list || []).map((l) => {
-
-                            return this.state.showEdit ?  (<EditLanguage showEdit={this.state.showEdit} closeEdit={this.closeEdit} updateLanguage={this.updateLanguage} currentLanguage={l}/>)
-                                :
+                        {list.map((l) => {
+                            return showEdit && keyId === l.id ? 
+                            <EditLanguage showEdit={showEdit} closeEdit={this.closeEdit} updateLanguage={this.updateLanguage} currentLanguage={newL}/>
+                            :
                             (
-                                <tr className="" key={l.id}>
-                                    <td className="">{l.language ? l.language : "dummy"}</td>
-                                    <td className="">{l.languageLevel ? l.languageLevel : "data"}</td>
-                                    <td className="">
-                                        <button type="button" className="ui right floated icon button">
-                                            <i className="close icon"></i>  
-                                        </button>
-                                        <button type="button" className="ui right floated icon button" > 
-                                            <i className="pencil icon" onClick={this.openEdit}></i>
-                                        </button>
+                            <tr className="" key={l.id}>
+                                <td className="">{l.language ? l.language : "dummy"}</td>
+                                <td className="">{l.languageLevel ? l.languageLevel : "data"}</td>
+                                <td className="">
+                                    <button type="button" className="ui right floated icon button">
+                                        <i className="close icon" onClick={()=>this.deleteLanguage(l.id)}></i>  
+                                    </button>
+                                    <button type="button" className="ui right floated icon button" > 
+                                        <i className="pencil icon" onClick={()=>this.openEdit(l.languageLevel,l.language,l.id,l.userId)}></i>
+                                    </button>
+                                    
                                 </td>                   
-                                </tr>
-                            )                       
-
+                            </tr>    
+                            );                                            
                         })}
                     </tbody>        
                 </table>

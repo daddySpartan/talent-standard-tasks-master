@@ -17,6 +17,6 @@ namespace Talent.Services.Profile.Models.Profile
         public string Language { get; set; }
         public string LanguageLevel { get; set; }
         public string Id { get; set; }
-        public string CurrentUserId { get; set; }
+        public string UserId { get; set; }
     }
 }

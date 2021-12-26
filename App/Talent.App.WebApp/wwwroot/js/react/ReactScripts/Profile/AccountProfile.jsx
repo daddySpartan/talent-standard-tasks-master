@@ -4,7 +4,7 @@ import SocialMediaLinkedAccount from './SocialMediaLinkedAccount.jsx';
 import { IndividualDetailSection } from './ContactDetail.jsx';
 import FormItemWrapper from '../Form/FormItemWrapper.jsx';
 import { Address, Nationality } from './Location.jsx';
-import Language from './Language.jsx';
+import {Language} from './Language.jsx';
 import Skill from './Skill.jsx';
 import Education from './Education.jsx';
 import Certificate from './Certificate.jsx';
@@ -24,7 +24,7 @@ export default class AccountProfile extends React.Component {
 
         this.state = {
             profileData: {
-                languages: [],
+                //languages: [],
                 //skills: [],
                 /*firstName: '',
                 lastName: '',
@@ -53,13 +53,14 @@ export default class AccountProfile extends React.Component {
                 }*/
             },
             loaderData: loaderData,
+            //languageData: []
 
         }
 
         this.updateWithoutSave = this.updateWithoutSave.bind(this)
         this.updateAndSaveData = this.updateAndSaveData.bind(this)
         this.updateForComponentId = this.updateForComponentId.bind(this)
-        //this.updateListComponentId= this.updateListComponentId.bind(this)
+        this.updateComponentList= this.updateComponentList.bind(this)
         this.saveProfile = this.saveProfile.bind(this)
         this.loadData = this.loadData.bind(this)
         this.init = this.init.bind(this);
@@ -92,6 +93,7 @@ export default class AccountProfile extends React.Component {
                 if (res.user) {
                     talentData = res.user
                     console.log("talentdata",talentData)
+                    console.log(talentData.languages)
                 }
                 this.updateWithoutSave(talentData)
                
@@ -107,8 +109,11 @@ export default class AccountProfile extends React.Component {
     updateWithoutSave(newValues) {
         let newProfile = Object.assign({},this.state.profileData, newValues)
         this.setState({
-            profileData: newProfile
+            profileData: newProfile,
+            //languageData: [...this.languageData,newProfile.languages]
         })
+        //console.log(this.state.profileData.languages)
+
     }
 
     //updates component's state and saves data
@@ -120,6 +125,15 @@ export default class AccountProfile extends React.Component {
         console.log(newProfile)
         
     }
+
+    updateComponentList(componentId,newValues) {
+        let data = {};
+        data[componentId] = newValues;
+       this.updateWithoutSave(data)
+        //console.log(this.state.profileData.languages)
+        
+    }
+   
 
     updateForComponentId(componentId, newValues) {
         let data = {};
@@ -167,6 +181,15 @@ export default class AccountProfile extends React.Component {
     }
 
     render() {
+
+        /*const languageArr = this.state.profileData.languages.map(function(val) {            
+            return {
+              id: val.id,
+              language: val.language,
+              languageLevel: val.languageLevel,
+            };
+          });*/
+
         return (
             <BodyWrapper reload={this.loadData} loaderData={this.state.loaderData}>
                 <section className="page-body">
@@ -221,7 +244,8 @@ export default class AccountProfile extends React.Component {
                                         >
                                             <Language
                                                 languageData={this.state.profileData.languages}
-                                                updateProfileData={this.updateAndSaveData}
+                                                addProfileData={this.updateAndSaveData}
+                                                updateProfileData={this.updateComponentList}
                                                 controlFunc={this.updateForComponentId}
                                                 componentId="languages"
                                             />

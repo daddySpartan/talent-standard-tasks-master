@@ -33,8 +33,8 @@ export default class AddLanguage extends React.Component {
 
     saveChange() {
         const data = this.state.newL
-        this.props.updateLanguage(data)
         this.props.closeAdd
+        this.props.addLanguage(data)       
 
     }
 

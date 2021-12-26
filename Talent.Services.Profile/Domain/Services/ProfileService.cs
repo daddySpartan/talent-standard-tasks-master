@@ -414,7 +414,8 @@ namespace Talent.Services.Profile.Domain.Services
             {
                 Id = language.Id,
                 LanguageLevel = language.LanguageLevel,
-                Language = language.Language
+                Language = language.Language,
+                UserId = language.UserId
             };
         }
 
