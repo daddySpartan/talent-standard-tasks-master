@@ -23,7 +23,8 @@ namespace Talent.Services.Profile.Models.Profile
         public Address Address { get; set; }
         public string Nationality { get; set; }
         public List<AddLanguageViewModel> Languages { get; set; }
-
+        public List<AddSkillViewModel> Skills { get; set; }
+        public List<ExperienceViewModel> Experience { get; set; }
         /*public string MobilePhone { get; set; }
         public bool IsMobilePhoneVerified { get; set; }
 
@@ -38,9 +39,8 @@ namespace Talent.Services.Profile.Models.Profile
         public string CvUrl { get; set; }
         public string JobSeekingStatus { get; set; }
 
-        public List<AddSkillViewModel> Skills { get; set; }
         public List<AddEducationViewModel> Education { get; set; }
         public List<AddCertificationViewModel> Certifications { get; set; }
-        public List<ExperienceViewModel> Experience { get; set; }*/
+        */
     }
 }

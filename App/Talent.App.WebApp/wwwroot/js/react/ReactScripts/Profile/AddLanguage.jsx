@@ -1,13 +1,11 @@
 
 import React from 'react';
-import Cookies from 'js-cookie';
 import { ChildSingleInput } from '../Form/SingleInput.jsx';
 import  {Select } from '../Form/Select.jsx';
 
 export default class AddLanguage extends React.Component {
     constructor(props) {
         super(props);
-        //const addlanguage = props.currentLanguage
 
         this.state = {
             newL: { 
@@ -37,9 +35,6 @@ export default class AddLanguage extends React.Component {
         this.props.addLanguage(data)       
 
     }
-
-
-
 
     render() {
         return (

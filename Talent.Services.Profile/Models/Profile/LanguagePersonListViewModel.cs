@@ -7,7 +7,7 @@ namespace Talent.Services.Profile.Models.Profile
 {
     public class LanguagePersonListViewModel
     {
-        public string PersonLanguageId { get; set; }
+        public string Id { get; set; }
         public string Language { get; set; }
         public string LanguageLevel { get; set; }
     }

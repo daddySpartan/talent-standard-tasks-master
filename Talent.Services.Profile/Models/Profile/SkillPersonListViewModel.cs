@@ -15,7 +15,8 @@ namespace Talent.Services.Profile.Models.Profile
     public class AddSkillViewModel
     {
         public string Id { get; set; }
-        public string Name { get; set; }
-        public string Level { get; set; }
+        public string Skill { get; set; }
+        public string ExperienceLevel { get; set; }
+        public string UserId { get; set; }
     }
 }

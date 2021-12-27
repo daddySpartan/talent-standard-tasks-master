@@ -159,8 +159,8 @@ namespace Talent.Services.Profile.Controllers
             try
             {
                 var userId = _userAppContext.CurrentUserId;
-                var result = await _userLanguageRepository.GetByIdAsync(userId);
-                return Json(new { Success = true, Data = result });
+                var result = await _profileService.GetLanguages(userId);
+                return Json(new { Success = true, languages = result });
             }
             catch (MongoException e)
             {

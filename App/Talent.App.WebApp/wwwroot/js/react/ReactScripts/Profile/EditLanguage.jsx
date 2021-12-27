@@ -46,8 +46,6 @@ export default class EditLanguage extends React.Component {
 
 
     render() {
-        //console.log(this.props.showEdit)
-        //console.log(this.props.keyId)
         return (
             this.props.showEdit ? this.renderEdit() : this.renderClose()
         )
@@ -102,8 +100,6 @@ export default class EditLanguage extends React.Component {
     }
 
     renderClose() {
-        //console.log(this.props.showEdit)
-        //console.log(this.props.currentId)
         this.props.closeEdit()
         return (null)
     }

@@ -5,7 +5,7 @@ import { IndividualDetailSection } from './ContactDetail.jsx';
 import FormItemWrapper from '../Form/FormItemWrapper.jsx';
 import { Address, Nationality } from './Location.jsx';
 import {Language} from './Language.jsx';
-import Skill from './Skill.jsx';
+import {Skill} from './Skill.jsx';
 import Education from './Education.jsx';
 import Certificate from './Certificate.jsx';
 import VisaStatus from './VisaStatus.jsx'
@@ -53,8 +53,6 @@ export default class AccountProfile extends React.Component {
                 }*/
             },
             loaderData: loaderData,
-            //languageData: []
-
         }
 
         this.updateWithoutSave = this.updateWithoutSave.bind(this)
@@ -110,10 +108,7 @@ export default class AccountProfile extends React.Component {
         let newProfile = Object.assign({},this.state.profileData, newValues)
         this.setState({
             profileData: newProfile,
-            //languageData: [...this.languageData,newProfile.languages]
         })
-        //console.log(this.state.profileData.languages)
-
     }
 
     //updates component's state and saves data
@@ -130,8 +125,6 @@ export default class AccountProfile extends React.Component {
         let data = {};
         data[componentId] = newValues;
        this.updateWithoutSave(data)
-        //console.log(this.state.profileData.languages)
-        
     }
    
 
@@ -141,19 +134,7 @@ export default class AccountProfile extends React.Component {
        this.updateAndSaveData(data)
        console.log(data)
     }
-
-/*    updateListComponentId(componentId, newValues) {
-        //let list = this.state.profileData.languages;
-        //let data = list.push(newValues)
-        this.setState(previousState => ({
-            profileData: [...previousState.profileData.languages, newLanguage]
-        }));
-      
-       // data[componentId] = newValues;
-       this.updateAndSaveData(data)
-       console.log(data)
-    }*/
-   
+  
     saveProfile() {
         var cookies = Cookies.get('talentAuthToken');
         $.ajax({
@@ -167,28 +148,24 @@ export default class AccountProfile extends React.Component {
             dataType: "json",
             data: JSON.stringify(this.state.profileData),
             success: function (res) {
+                //let talentData = null;
                 if (res.success) {
                     TalentUtil.notification.show("Profile updated sucessfully", "success", null, null)
+                    //talentData = res.user
+                    //console.log("talentdata",talentData)
                 } else {
                     TalentUtil.notification.show("Profile did not update successfully", "error", null, null)
                 }
-
+                //this.updateWithoutSave(talentData)
             }.bind(this),
             error: function (res) {
                 TalentUtil.notification.show("Error while saving Profile details", "error", null, null);
             }.bind(this)
         })
+       //this.init()
     }
 
     render() {
-
-        /*const languageArr = this.state.profileData.languages.map(function(val) {            
-            return {
-              id: val.id,
-              language: val.language,
-              languageLevel: val.languageLevel,
-            };
-          });*/
 
         return (
             <BodyWrapper reload={this.loadData} loaderData={this.state.loaderData}>
@@ -244,19 +221,22 @@ export default class AccountProfile extends React.Component {
                                         >
                                             <Language
                                                 languageData={this.state.profileData.languages}
-                                                addProfileData={this.updateAndSaveData}
-                                                updateProfileData={this.updateComponentList}
+                                                updateProfileData={this.updateWithoutSave}
+                                                //updateProfileData={this.updateComponentList}
                                                 controlFunc={this.updateForComponentId}
                                                 componentId="languages"
+                                                refresh = {this.loadData}
                                             />
                                         </FormItemWrapper>
-                                        {/*<FormItemWrapper
+                                        <FormItemWrapper
                                             title='Skills'
                                             tooltip='List your skills'
                                         >
                                             <Skill
                                                 skillData={this.state.profileData.skills}
-                                                updateProfileData={this.updateAndSaveData}
+                                                controlFunc={this.updateForComponentId}
+                                                componentId="skills"
+                                                refresh = {this.loadData}
                                             />
                                         </FormItemWrapper>
                                         <FormItemWrapper
@@ -265,10 +245,11 @@ export default class AccountProfile extends React.Component {
                                         >
                                             <Experience
                                                 experienceData={this.state.profileData.experience}
-                                                updateProfileData={this.updateAndSaveData}
+                                                controlFunc={this.updateForComponentId}
+                                                componentId="experience"
                                             />
                                         </FormItemWrapper>
-                                        <FormItemWrapper
+                                        {/*<FormItemWrapper
                                             title='Education'
                                             tooltip='Add your educational background'
                                         >

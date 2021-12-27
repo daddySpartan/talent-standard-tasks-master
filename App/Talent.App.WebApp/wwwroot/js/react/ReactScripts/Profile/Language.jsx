@@ -6,32 +6,17 @@ import EditLanguage from './EditLanguage.jsx';
 
 export class Language extends React.Component {
     constructor(props) {
-        super(props);
-        /*const newArr = props.languageData.map(function(val) {            
-            return {
-              id: val.id,
-              language: val.language,
-              languageLevel: val.languageLevel,
-              userid: val.userid
-            };
-          });*/
-        //const newArr = props.languageData
-        /*const data = props.languageData  ? [[], props.languageData]
-        : 
-            {
-                //id: "",
-                language: "",
-                languageLevel: "",
-            }*/
-         
-
+        super(props);       
+        /*const newList = props.languageData ? 
+        [newList,...props.languageData] :
+        [{
+            language: "",
+            languageLevel: "",
+            id: "",
+            userId: "",
+        }]*/
         this.state = {
-            newL: {
-                language: "",
-                languageLevel: "",
-                id: "",
-                userId: "",
-            },
+            //newL: [...newList],
             summchar: 0,
             descchar: 0,
             showAdd: false,
@@ -45,7 +30,40 @@ export class Language extends React.Component {
         this.updateLanguage = this.updateLanguage.bind(this)
         this.addLanguage = this.addLanguage.bind(this)
         this.deleteLanguage = this.deleteLanguage.bind(this)
+        //this.loadLanguages = this.loadLanguages.bind(this)
     }
+    /*componentDidMount() {
+        this.loadLanguages();
+    }
+
+    loadLanguages() {
+        var cookies = Cookies.get('talentAuthToken');
+        $.ajax({
+            url: 'http://localhost:60290/profile/profile/getLanguages',
+            headers: {
+                'Authorization': 'Bearer ' + cookies,
+                'Content-Type': 'application/json'
+            },
+            type: "GET",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (res) {
+                let languageData = null;
+                if (res.user) {
+                    talentData = res.user
+                    console.log("languagedata",languageData)
+                }
+                this.props.updateProfileData(languageData)
+               
+            }.bind(this),
+            error: function (res) {
+                console.log(res.status)
+            }
+
+        })
+        //this.init()
+    }*/
+
 
     openAdd () {
         this.setState({
@@ -58,18 +76,21 @@ export class Language extends React.Component {
         this.setState({
             showAdd: false
         })
+        
     }
 
     openEdit (currentlevel,currentlanguage,currentid,currentuserid) {
+        /*const newLanguage = {
+            language: currentlanguage,
+            languageLevel: currentlevel,
+            id: currentid,
+            userId: currentuserid
+        }
+        const newList = [...this.state.newL,newLanguage]*/
         this.setState({
             showEdit: true,
             keyId: currentid,
-            newL: {
-                language: currentlanguage,
-                languageLevel: currentlevel,
-                id: currentid,
-                userId: currentuserid
-            }
+            //newL: [...newList]
         })
     }
 
@@ -78,20 +99,19 @@ export class Language extends React.Component {
             showEdit: false,
             keyId: 0
         })
+        
     }
 
    addLanguage(newLang)  {
         const list = [...this.props.languageData, newLang];
-        this.setState(state => {     
+        /*this.setState(state => {     
             return {
-              newL: newLang,
+              newL: [...list],
             };
-          });
+          });*/
 
-        //console.log(newLang)
-        //console.log(this.state.list)
-        //this.props.updateProfileData(this.state.list)
         this.props.controlFunc(this.props.componentId, list)
+        //this.props.refresh()
         this.closeAdd()
         
     }
@@ -104,13 +124,25 @@ export class Language extends React.Component {
               return item;
             }
           });
-        this.props.controlFunc(this.props.componentId,list)     
+          /*this.setState(state => {     
+            return {
+              newL: [...list],
+            };
+          });*/
+        this.props.controlFunc(this.props.componentId,list)
+        //this.props.refresh()     
         this.closeEdit()
 
     }
 
     deleteLanguage (idLang) {
+        //this.props.refresh() 
         const list = this.props.languageData.filter((item) => item.id !== idLang);  
+        /*this.setState(state => {     
+            return {
+              newL: [...list],
+            };
+          });*/
         this.props.controlFunc(this.props.componentId,list)     
         this.closeEdit()
 
@@ -119,7 +151,7 @@ export class Language extends React.Component {
 
     render() {
         const list = this.props.languageData
-        const {newL,keyId,showEdit} = this.state
+        const {keyId,showEdit} = this.state
 
         if (!list) {
             return <div />
@@ -141,7 +173,7 @@ export class Language extends React.Component {
                     <tbody className="">
                         {list.map((l) => {
                             return showEdit && keyId === l.id ? 
-                            <EditLanguage showEdit={showEdit} closeEdit={this.closeEdit} updateLanguage={this.updateLanguage} currentLanguage={newL}/>
+                            <EditLanguage showEdit={showEdit} closeEdit={this.closeEdit} updateLanguage={this.updateLanguage} currentLanguage={l}/>
                             :
                             (
                             <tr className="" key={l.id}>
