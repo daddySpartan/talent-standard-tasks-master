@@ -1,7 +1,7 @@
 ﻿import React from 'react'
 import { ChildSingleInput } from '../Form/SingleInput.jsx';
 import  {Select } from '../Form/Select.jsx';
-import {format } from 'date-fns';
+import moment from 'moment';
 
 export class VisaStatus extends React.Component {
     constructor(props) {
@@ -21,7 +21,7 @@ export class VisaStatus extends React.Component {
         this.saveChange = this.saveChange.bind(this)
         this.renderVisaDate = this.renderVisaDate.bind(this)
         this.checkVisa = this.checkVisa.bind(this)
-        this.formatDate = this.formatDate.bind(this)
+        //this.formatDate = this.formatDate.bind(this)
         this.onFocus = this.onFocus.bind(this)
         this.onBlur = this.onBlur.bind(this)
           
@@ -46,6 +46,7 @@ export class VisaStatus extends React.Component {
             })
         }
         this.props.saveProfileData(data)
+        console.log(data)
     }    
 
     handleDate(event) {
@@ -69,15 +70,15 @@ export class VisaStatus extends React.Component {
         if (val === 'Permanent Resident') return false
         if (val === null) return false
 
-        console.log(this.state.newVisaStatus)
-        console.log(this.state.newVisaExpiry)
+        //console.log(this.state.newVisaStatus)
+        //console.log(this.state.newVisaExpiry)
     }
 
-    formatDate (_date) {
+    /*formatDate (_date) {
         var date = new Date(_date);
         var formattedDate = format(date, "dd/MM/yyyy");
         return(formattedDate)           
-    }
+    }*/
         
     onFocus() {
         this.setState({
@@ -143,7 +144,7 @@ export class VisaStatus extends React.Component {
                     onBlur={this.onBlur}
                     name="visaExpiryDate"
                     //value={this.state.newVisaExpiry ? this.formatDate(this.state.newVisaExpiry) : ""}                    
-                    placeholder={this.props.visaExpiryDate ? this.formatDate(this.props.visaExpiryDate) : "Expiry date"}                  
+                    placeholder={this.props.visaExpiryDate ? moment(this.props.visaExpiryDate).format('DD/MM/YYYY') : "Expiry date"}                  
                     onChange={this.handleDate}
                 />
                

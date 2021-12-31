@@ -1,12 +1,11 @@
 ﻿import React from 'react'
 import { Form, Checkbox } from 'semantic-ui-react';
-import { SingleInput } from '../Form/SingleInput.jsx';
 
 export default class TalentStatus extends React.Component {
     constructor(props) {
         super(props);
         const jobseekstatus = props.status ?
-            props.status : ""              
+          Object.assign({}, props.status) : { status: "",  }            
         this.state = {
             value : jobseekstatus,                      
         }
@@ -21,13 +20,9 @@ export default class TalentStatus extends React.Component {
 
         data[name] = status           
         this.setState({
-            value: status
+            value: data
         })
-        console.log(name)
-        console.log(event)
-        console.log(status)
-        console.log(data)
-        this.props.saveProfileData(data)
+        this.props.controlFunc(this.props.componentId, data)
     }    
     
 
@@ -43,9 +38,9 @@ export default class TalentStatus extends React.Component {
                 <Checkbox
                   radio
                   label='Actively looking for a job'
-                  name='jobSeekingStatus'
+                  name='status'
                   value='Actively looking for a job'
-                  checked={this.state.value === 'Actively looking for a job'}
+                  checked={this.props.status.status === 'Actively looking for a job'}
                   onClick={this.handleChange}
                 />
               </Form.Field>
@@ -53,9 +48,9 @@ export default class TalentStatus extends React.Component {
                 <Checkbox
                   radio
                   label='Not looking for a job at the moment'
-                  name='jobSeekingStatus'
+                  name='status'
                   value='Not looking for a job at the moment'
-                  checked={this.state.value === 'Not looking for a job at the moment'}
+                  checked={this.props.status.status === 'Not looking for a job at the moment'}
                   onClick={this.handleChange}
                 />
               </Form.Field>
@@ -63,9 +58,9 @@ export default class TalentStatus extends React.Component {
                 <Checkbox
                   radio
                   label='Currently employed but open to offers'
-                  name='jobSeekingStatus'
+                  name='status'
                   value='Currently employed but open to offers'
-                  checked={this.state.value === 'Currently employed but open to offers'}
+                  checked={this.props.status.status === 'Currently employed but open to offers'}
                   onClick={this.handleChange}
                 />
               </Form.Field>
@@ -73,9 +68,9 @@ export default class TalentStatus extends React.Component {
                 <Checkbox
                   radio
                   label='Will be available on later date'
-                  name='jobSeekingStatus'
+                  name='status'
                   value='Will be available on later date'
-                  checked={this.state.value === 'Will be available on later date'}
+                  checked={this.props.status.status === 'Will be available on later date'}
                   onClick={this.handleChange}
                 />
               </Form.Field>

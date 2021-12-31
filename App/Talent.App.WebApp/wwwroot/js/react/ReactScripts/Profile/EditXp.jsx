@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChildSingleInput,SingleInput } from '../Form/SingleInput.jsx';
-import {format } from 'date-fns';
+import moment from 'moment';
 
 export default class EditXp extends React.Component {
     constructor(props) {
@@ -24,7 +24,7 @@ export default class EditXp extends React.Component {
         this.renderClose = this.renderClose.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.saveChange = this.saveChange.bind(this)        
-        this.formatDate = this.formatDate.bind(this)
+        //this.formatDate = this.formatDate.bind(this)
         this.onFocus = this.onFocus.bind(this)
         this.onBlur = this.onBlur.bind(this)
 
@@ -45,11 +45,11 @@ export default class EditXp extends React.Component {
         this.props.updateXp(data,id)       
     }
 
-    formatDate (_date) {
+    /*formatDate (_date) {
         var date = new Date(_date);
         var formattedDate = format(date, "dd/MM/yyyy");
         return(formattedDate)           
-    }
+    }*/
         
     onFocus() {
         this.setState({
@@ -121,7 +121,7 @@ export default class EditXp extends React.Component {
                             onBlur={this.onBlur}
                             label="Start Date"
                             name="start"                                      
-                            placeholder={this.props.currentXp.start ? this.formatDate(this.props.currentXp.start) : "Start date"}                  
+                            placeholder={this.props.currentXp.start ? moment(this.props.currentXp.start).format('DD/MM/YYYY') : "Start date"}                  
                             onChange={this.handleDate}
                         />
                   
@@ -145,7 +145,7 @@ export default class EditXp extends React.Component {
                             onBlur={this.onBlur}
                             label="End date:"
                             name="end"                                      
-                            placeholder={this.props.currentXp.end ? this.formatDate(this.props.currentXp.end) : "End date"}                  
+                            placeholder={this.props.currentXp.end ? moment(this.props.currentXp.end).format('DD/MM/YYYY') : "End date"}                  
                             onChange={this.handleDate}
                         />
                        

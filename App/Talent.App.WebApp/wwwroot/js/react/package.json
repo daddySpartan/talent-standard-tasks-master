@@ -4,7 +4,6 @@
   "description": "Talent Project",
   "main": "app.js",
   "dependencies": {
-    "date-fns": "^2.28.0",
     "draft-js": "^0.10.5",
     "moment": "^2.22.2",
     "react": "^16.3.2",

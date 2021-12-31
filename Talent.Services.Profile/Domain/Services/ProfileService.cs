@@ -76,9 +76,9 @@ namespace Talent.Services.Profile.Domain.Services
                     Experience = experience,
                     VisaStatus = profile.VisaStatus,
                     VisaExpiryDate = profile.VisaExpiryDate,
-                    JobSeekingStatus = profile.JobSeekingStatus.Status,
-                    //ProfilePhoto = profile.ProfilePhoto,
-                    //ProfilePhotoUrl = profile.ProfilePhotoUrl,
+                    JobSeekingStatus = profile.JobSeekingStatus,
+                    /*ProfilePhoto = profile.ProfilePhoto,
+                    //ProfilePhotoUrl = profile.ProfilePhotoUrl,*/
 
                 };
                 return result;
@@ -105,9 +105,9 @@ namespace Talent.Services.Profile.Domain.Services
                     existingTalent.Nationality = model.Nationality;
                     existingTalent.VisaStatus = model.VisaStatus;
                     existingTalent.VisaExpiryDate = model.VisaExpiryDate;
-                    existingTalent.JobSeekingStatus.Status = model.JobSeekingStatus;
-                    //existingTalent.ProfilePhoto = model.ProfilePhoto;
-                    //existingTalent.ProfilePhotoUrl = model.ProfilePhotoUrl;
+                    existingTalent.JobSeekingStatus = model.JobSeekingStatus;
+                    /*existingTalent.ProfilePhoto = model.ProfilePhoto;
+                    //existingTalent.ProfilePhotoUrl = model.ProfilePhotoUrl;*/
 
                     var newLanguages = new List<UserLanguage>();
                     foreach (var item in model.Languages)

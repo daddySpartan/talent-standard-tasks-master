@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChildSingleInput} from '../Form/SingleInput.jsx';
-import {format } from 'date-fns';
+import moment from 'moment';
 
 export default class AddXp extends React.Component {
     constructor(props) {
@@ -20,7 +20,7 @@ export default class AddXp extends React.Component {
         this.renderClose = this.renderClose.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.saveChange = this.saveChange.bind(this)
-        this.formatDate = this.formatDate.bind(this)
+        //this.formatDate = this.formatDate.bind(this)
         this.onFocus = this.onFocus.bind(this)
         this.onBlur = this.onBlur.bind(this)      
     }
@@ -40,11 +40,11 @@ export default class AddXp extends React.Component {
         //console.log(data)      
     }
 
-    formatDate (_date) {
+    /*formatDate (_date) {
         var date = new Date(_date);
         var formattedDate = format(date, "dd/MM/yyyy");
         return(formattedDate)           
-    }
+    }*/
         
     onFocus() {
         this.setState({

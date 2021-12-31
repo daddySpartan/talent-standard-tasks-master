@@ -3,7 +3,7 @@ import React from 'react';
 import Cookies from 'js-cookie';
 import AddXp from './AddXp.jsx';
 import EditXp from './EditXp.jsx';
-import {format } from 'date-fns';
+import moment from 'moment';
 
 export default class Experience extends React.Component {
     constructor(props) {
@@ -20,7 +20,7 @@ export default class Experience extends React.Component {
         this.updateExperience = this.updateExperience.bind(this)
         this.addExperience = this.addExperience.bind(this)
         this.deleteExperience = this.deleteExperience.bind(this)
-        this.formatDate = this.formatDate.bind(this)
+        //this.formatDate = this.formatDate.bind(this)
        
     };
  
@@ -79,11 +79,11 @@ export default class Experience extends React.Component {
         this.closeEdit()
     }
 
-    formatDate (_date) {
+    /*formatDate (_date) {
         var date = new Date(_date);
         var formattedDate = format(date, "do MMM, yyyy");
         return(formattedDate)           
-    }
+    }*/
 
     
     render() {
@@ -140,8 +140,8 @@ export default class Experience extends React.Component {
                                 <td className="">{x.company ? x.company : "dummy"}</td>
                                 <td className="">{x.position ? x.position : "data"}</td>
                                 <td className="">{x.responsibilities ? x.responsibilities : ""}</td>
-                                <td className="">{x.start ? this.formatDate(x.start) : ""}</td>
-                                <td className="">{x.end ? this.formatDate(x.end) : ""}</td>
+                                <td className="">{x.start ? moment(x.start).format('Do MMM, YYYY') : ""}</td>
+                                <td className="">{x.end ? moment(x.end).format('Do MMM, YYYY') : ""}</td>
                                <td className="">
                                     <button type="button" className="ui right floated icon button">
                                         <i className="close icon" onClick={()=>this.deleteExperience(x.id)}></i>  

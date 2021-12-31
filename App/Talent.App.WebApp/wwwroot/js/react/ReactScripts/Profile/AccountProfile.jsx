@@ -122,7 +122,7 @@ export default class AccountProfile extends React.Component {
         this.setState({
             profileData: newProfile
         }, this.saveProfile)
-        console.log(newProfile)
+        //console.log(newProfile)
         
     }
 
@@ -156,7 +156,7 @@ export default class AccountProfile extends React.Component {
                 //let talentData = null;
                 if (res.success) {
                     TalentUtil.notification.show("Profile updated sucessfully", "success", null, null)
-                    //talentData = res.user
+                    //talentData = res
                     //console.log("talentdata",talentData)
                 } else {
                     TalentUtil.notification.show("Profile did not update successfully", "error", null, null)
@@ -280,6 +280,8 @@ export default class AccountProfile extends React.Component {
                                                 status={this.state.profileData.jobSeekingStatus}
                                                 updateProfileData={this.updateWithoutSave}
                                                 saveProfileData={this.updateAndSaveData}
+                                                controlFunc={this.updateForComponentId}
+                                                componentId="jobSeekingStatus"
                                             />
                                         </FormItemWrapper>
                                         {/*<FormItemWrapper
