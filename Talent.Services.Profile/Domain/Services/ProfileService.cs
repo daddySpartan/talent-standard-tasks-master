@@ -74,6 +74,11 @@ namespace Talent.Services.Profile.Domain.Services
                     Languages = languages,
                     Skills = skills,
                     Experience = experience,
+                    VisaStatus = profile.VisaStatus,
+                    VisaExpiryDate = profile.VisaExpiryDate,
+                    JobSeekingStatus = profile.JobSeekingStatus.Status,
+                    //ProfilePhoto = profile.ProfilePhoto,
+                    //ProfilePhotoUrl = profile.ProfilePhotoUrl,
 
                 };
                 return result;
@@ -98,6 +103,11 @@ namespace Talent.Services.Profile.Domain.Services
                     existingTalent.Description = model.Description;
                     existingTalent.Address = model.Address;
                     existingTalent.Nationality = model.Nationality;
+                    existingTalent.VisaStatus = model.VisaStatus;
+                    existingTalent.VisaExpiryDate = model.VisaExpiryDate;
+                    existingTalent.JobSeekingStatus.Status = model.JobSeekingStatus;
+                    //existingTalent.ProfilePhoto = model.ProfilePhoto;
+                    //existingTalent.ProfilePhotoUrl = model.ProfilePhotoUrl;
 
                     var newLanguages = new List<UserLanguage>();
                     foreach (var item in model.Languages)
@@ -422,17 +432,14 @@ namespace Talent.Services.Profile.Domain.Services
         {
             original.ExperienceLevel = model.ExperienceLevel;
             original.Skill = model.Skill;
-            original.Id = model.Id;
         }
         protected void UpdateLanguageFromView(AddLanguageViewModel model, UserLanguage original)
         {
             original.LanguageLevel = model.LanguageLevel;
             original.Language = model.Language;
-            original.Id = model.Id;
         }
         protected void UpdateExperienceFromView(ExperienceViewModel model, UserExperience original)
         {
-            original.Id = model.Id;
             original.Company = model.Company;
             original.Position = model.Position;
             original.Responsibilities = model.Responsibilities;
@@ -471,6 +478,7 @@ namespace Talent.Services.Profile.Domain.Services
                 Id = experience.Id,
                 Company = experience.Company,
                 Position = experience.Position,
+                Responsibilities = experience.Responsibilities,
                 Start = experience.Start,
                 End = experience.End,
             };

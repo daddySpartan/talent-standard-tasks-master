@@ -7,18 +7,7 @@ import EditLanguage from './EditLanguage.jsx';
 export class Language extends React.Component {
     constructor(props) {
         super(props);       
-        /*const newList = props.languageData ? 
-        [newList,...props.languageData] :
-        [{
-            language: "",
-            languageLevel: "",
-            id: "",
-            userId: "",
-        }]*/
         this.state = {
-            //newL: [...newList],
-            summchar: 0,
-            descchar: 0,
             showAdd: false,
             showEdit: false,
             keyId: 0
@@ -30,40 +19,7 @@ export class Language extends React.Component {
         this.updateLanguage = this.updateLanguage.bind(this)
         this.addLanguage = this.addLanguage.bind(this)
         this.deleteLanguage = this.deleteLanguage.bind(this)
-        //this.loadLanguages = this.loadLanguages.bind(this)
     }
-    /*componentDidMount() {
-        this.loadLanguages();
-    }
-
-    loadLanguages() {
-        var cookies = Cookies.get('talentAuthToken');
-        $.ajax({
-            url: 'http://localhost:60290/profile/profile/getLanguages',
-            headers: {
-                'Authorization': 'Bearer ' + cookies,
-                'Content-Type': 'application/json'
-            },
-            type: "GET",
-            contentType: "application/json",
-            dataType: "json",
-            success: function (res) {
-                let languageData = null;
-                if (res.user) {
-                    talentData = res.user
-                    console.log("languagedata",languageData)
-                }
-                this.props.updateProfileData(languageData)
-               
-            }.bind(this),
-            error: function (res) {
-                console.log(res.status)
-            }
-
-        })
-        //this.init()
-    }*/
-
 
     openAdd () {
         this.setState({
@@ -79,18 +35,10 @@ export class Language extends React.Component {
         
     }
 
-    openEdit (currentlevel,currentlanguage,currentid,currentuserid) {
-        /*const newLanguage = {
-            language: currentlanguage,
-            languageLevel: currentlevel,
-            id: currentid,
-            userId: currentuserid
-        }
-        const newList = [...this.state.newL,newLanguage]*/
+    openEdit (currentid) {
         this.setState({
             showEdit: true,
             keyId: currentid,
-            //newL: [...newList]
         })
     }
 
@@ -103,15 +51,8 @@ export class Language extends React.Component {
     }
 
    addLanguage(newLang)  {
-        const list = [...this.props.languageData, newLang];
-        /*this.setState(state => {     
-            return {
-              newL: [...list],
-            };
-          });*/
-
+        const list = this.props.languageData ? [...this.props.languageData, newLang] : [newLang]
         this.props.controlFunc(this.props.componentId, list)
-        //this.props.refresh()
         this.closeAdd()
         
     }
@@ -124,25 +65,13 @@ export class Language extends React.Component {
               return item;
             }
           });
-          /*this.setState(state => {     
-            return {
-              newL: [...list],
-            };
-          });*/
         this.props.controlFunc(this.props.componentId,list)
-        //this.props.refresh()     
         this.closeEdit()
 
     }
 
     deleteLanguage (idLang) {
-        //this.props.refresh() 
         const list = this.props.languageData.filter((item) => item.id !== idLang);  
-        /*this.setState(state => {     
-            return {
-              newL: [...list],
-            };
-          });*/
         this.props.controlFunc(this.props.componentId,list)     
         this.closeEdit()
 
@@ -154,7 +83,25 @@ export class Language extends React.Component {
         const {keyId,showEdit} = this.state
 
         if (!list) {
-            return <div />
+            return (
+                <React.Fragment>                
+                    <AddLanguage showAdd={this.state.showAdd} closeAdd={this.closeAdd} addLanguage={this.addLanguage}/>
+                    <div className="sixteen wide column">
+                
+                        <table className="ui single line table">
+                            <thead className="">
+                                <tr className="">
+                                    <th className="">Language</th>
+                                    <th className="">Level</th>
+                                    <th className=""><button type="button" className="ui right floated black button" onClick={this.openAdd}>+ Add New</button> </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </React.Fragment>
+
+
+            )
         }
         return (
             <React.Fragment>
@@ -184,7 +131,7 @@ export class Language extends React.Component {
                                         <i className="close icon" onClick={()=>this.deleteLanguage(l.id)}></i>  
                                     </button>
                                     <button type="button" className="ui right floated icon button" > 
-                                        <i className="pencil icon" onClick={()=>this.openEdit(l.languageLevel,l.language,l.id,l.userId)}></i>
+                                        <i className="pencil icon" onClick={()=>this.openEdit(l.id)}></i>
                                     </button>
                                     
                                 </td>                   

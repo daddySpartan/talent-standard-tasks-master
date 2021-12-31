@@ -93,8 +93,8 @@ namespace Talent.Services.Profile.Controllers
 
             try
             {
-                string userId = _userAppContext.CurrentUserId;
-
+                //string userId = _userAppContext.CurrentUserId;
+                string userId = String.IsNullOrWhiteSpace(id) ? _userAppContext.CurrentUserId : id;
                 var userProfile = await _profileService.GetTalentProfile(userId);
 
                 return Json(new { Success = true, user = userProfile });

@@ -6,14 +6,7 @@ import EditSkill from './EditSkill.jsx';
 export class Skill extends React.Component {
     constructor(props) {
         super(props);       
-
         this.state = {
-            newS: {
-                skill: "",
-                experienceLevel: "",
-                id: "",
-                userId: "",
-            },
             showAdd: false,
             showEdit: false,
             keyId: 0
@@ -40,16 +33,10 @@ export class Skill extends React.Component {
         })
     }
 
-    openEdit (currentlevel,currentskill,currentid,currentuserid) {
+    openEdit (currentid) {
         this.setState({
             showEdit: true,
             keyId: currentid,
-            newS: {
-                skill: currentskill,
-                experienceLevel: currentlevel,
-                id: currentid,
-                userId: currentuserid
-            }
         })
     }
 
@@ -62,14 +49,7 @@ export class Skill extends React.Component {
 
    addSkill(newSkill)  {
         const list = this.props.skillData ? [...this.props.skillData, newSkill] : [newSkill];
-        this.setState(state => {     
-            return {
-              newS: list,
-            };
-          });
-        //console.log(list)
         this.props.controlFunc(this.props.componentId, list)
-        //this.props.refresh() 
         this.closeAdd()
         
     }
@@ -83,13 +63,11 @@ export class Skill extends React.Component {
             }
           });
         this.props.controlFunc(this.props.componentId,list)  
-        //this.props.refresh()   
         this.closeEdit()
 
     }
 
     deleteSkill (idSkill) {
-        //this.props.refresh() 
         const list = this.props.skillData.filter((item) => item.id !== idSkill);  
         this.props.controlFunc(this.props.componentId,list)     
         this.closeEdit()
@@ -99,7 +77,7 @@ export class Skill extends React.Component {
 
     render() {
         const list = this.props.skillData
-        const {newS,keyId,showEdit} = this.state
+        const {keyId,showEdit} = this.state
 
         if (!list) {
         return (
@@ -138,7 +116,7 @@ export class Skill extends React.Component {
                     <tbody className="">
                         {list.map((s) => {
                             return showEdit && keyId === s.id ? 
-                            <EditSkill showEdit={showEdit} closeEdit={this.closeEdit} updateSkill={this.updateSkill} currentSkill={newS}/>
+                            <EditSkill showEdit={showEdit} closeEdit={this.closeEdit} updateSkill={this.updateSkill} currentSkill={s}/>
                             :
                             (
                             <tr className="" key={s.id}>
@@ -149,7 +127,7 @@ export class Skill extends React.Component {
                                         <i className="close icon" onClick={()=>this.deleteSkill(s.id)}></i>  
                                     </button>
                                     <button type="button" className="ui right floated icon button" > 
-                                        <i className="pencil icon" onClick={()=>this.openEdit(s.experienceLevel,s.skill,s.id,s.userId)}></i>
+                                        <i className="pencil icon" onClick={()=>this.openEdit(s.id)}></i>
                                     </button>
                                     
                                 </td>                   

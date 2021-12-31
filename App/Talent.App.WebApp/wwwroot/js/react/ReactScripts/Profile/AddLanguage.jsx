@@ -59,7 +59,6 @@ export default class AddLanguage extends React.Component {
                 <div className="five wide column">
                     <ChildSingleInput
                         inputType="text"
-                        //label="Language"
                         name="language"
                         value="Language"
                         controlFunc={this.handleChange}
@@ -70,7 +69,6 @@ export default class AddLanguage extends React.Component {
                 </div>
                 <div className="five wide column">
                     <Select 
-                        //label = "Country"
                         placeholder="Language Level"
                         value="languageLevel"
                         controlFunc={this.handleChange}

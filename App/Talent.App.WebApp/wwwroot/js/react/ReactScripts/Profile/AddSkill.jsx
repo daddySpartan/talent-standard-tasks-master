@@ -16,8 +16,6 @@ export default class AddSkill extends React.Component {
         this.renderClose = this.renderClose.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.saveChange = this.saveChange.bind(this)
-        
-
     }
 
     handleChange(event) {

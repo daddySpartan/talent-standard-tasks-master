@@ -1,27 +1,28 @@
 import React from 'react';
-import { ChildSingleInput,SingleInput } from '../Form/SingleInput.jsx';
-import  {Select } from '../Form/Select.jsx';
+import { ChildSingleInput} from '../Form/SingleInput.jsx';
+import {format } from 'date-fns';
 
 export default class AddXp extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            newXp: { 
-      
+            newXp: {      
                 company: "",
                 position: "",
                 responsibilities: "",
                 start: "",
                 end: ""
             },
+            type : 'text'
         }
         this.renderAdd = this.renderAdd.bind(this)
         this.renderClose = this.renderClose.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.saveChange = this.saveChange.bind(this)
-        
-
+        this.formatDate = this.formatDate.bind(this)
+        this.onFocus = this.onFocus.bind(this)
+        this.onBlur = this.onBlur.bind(this)      
     }
 
     handleChange(event) {
@@ -37,20 +38,33 @@ export default class AddXp extends React.Component {
         this.props.closeAdd
         this.props.addXp(data) 
         //console.log(data)      
-
     }
 
+    formatDate (_date) {
+        var date = new Date(_date);
+        var formattedDate = format(date, "dd/MM/yyyy");
+        return(formattedDate)           
+    }
+        
+    onFocus() {
+        this.setState({
+          type: 'date'
+        });
+      }
+    onBlur() {
+    
+        this.setState({
+          type: 'text'
+        });
+      }
+   
     render() {
         return (
             this.props.showAdd ? this.renderAdd() : this.renderClose()
         )
     }
 
-
     renderAdd() {
-
-   
-
     return(
         <React.Fragment>
             <div className="row">
@@ -59,8 +73,9 @@ export default class AddXp extends React.Component {
                         inputType="text"
                         name="company"
                         value="Company"
+                        label="Company:"
                         controlFunc={this.handleChange}
-                        maxLength={20}
+                        maxLength={50}
                         placeholder={"Add company"}
                         errorMessage="Please enter a valid company"
                     />
@@ -70,8 +85,9 @@ export default class AddXp extends React.Component {
                         inputType="text"
                         name="position"
                         value="Position"
+                        label="Position:"
                         controlFunc={this.handleChange}
-                        maxLength={20}
+                        maxLength={50}
                         placeholder={"Add position"}
                         errorMessage="Please enter a valid position"
                     />
@@ -79,20 +95,22 @@ export default class AddXp extends React.Component {
             </div>
             <div className="row">
                 <div className="eight wide column">
-                    <SingleInput
+                    <ChildSingleInput
                         inputType="date"
                         name="start"
                         value="Start"
+                        label="Start date:"
                         controlFunc={this.handleChange}
                         placeholder={"Add start date"}
                         errorMessage="Please enter a valid start date"
                     />
                 </div>
                 <div className="eight wide column">
-                    <SingleInput
+                    <ChildSingleInput
                         inputType="date"
                         name="end"
                         value="End"
+                        label="End date:"
                         controlFunc={this.handleChange}
                         placeholder={"Add end date"}
                         errorMessage="Please enter a valid end date"
@@ -105,6 +123,7 @@ export default class AddXp extends React.Component {
                         inputType="text"
                         name="responsibilities"
                         value="Responsibilities"
+                        label="Responsibilities:"
                         controlFunc={this.handleChange}
                         maxLength={100}
                         placeholder={"Add responsibilities"}
