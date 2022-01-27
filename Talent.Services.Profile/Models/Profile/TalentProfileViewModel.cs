@@ -28,10 +28,10 @@ namespace Talent.Services.Profile.Models.Profile
         public string VisaStatus { get; set; }
         public DateTime? VisaExpiryDate { get; set; }
         public JobSeekingStatus JobSeekingStatus { get; set; }
-        /*public string ProfilePhoto { get; set; }
-        //public string ProfilePhotoUrl { get; set; }
+        public string ProfilePhoto { get; set; }
+        public string ProfilePhotoUrl { get; set; }
 
-        public string MobilePhone { get; set; }
+        /*public string MobilePhone { get; set; }
         public bool IsMobilePhoneVerified { get; set; }
 
 

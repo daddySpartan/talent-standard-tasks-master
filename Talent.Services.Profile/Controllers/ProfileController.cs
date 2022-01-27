@@ -260,9 +260,29 @@ namespace Talent.Services.Profile.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public ActionResult getProfileImage(string Id)
         {
-            var profileUrl = _documentService.GetFileURL(Id, FileType.ProfilePhoto);
+            //var profileUrl = _documentService.GetFileURL(Id, FileType.ProfilePhoto);
             //Please do logic for no image available - maybe placeholder would be fine
-            return Json(new { profilePath = profileUrl });
+            try
+            {
+                var profileUrl = _documentService.GetFileURL(Id, FileType.ProfilePhoto);
+                //Please do logic for no image available - maybe placeholder would be fine
+
+                if (profileUrl != null)
+                {
+                    return Json(new { profilePath = profileUrl });
+                }
+                else
+                {
+                    return Json(new { Success = false });
+                }
+
+            }
+            catch (Exception e)
+            {
+                return Json(new { Success = false, Message = e.Message });
+            }
+
+            //return Json(new { profilePath = profileUrl });
         }
 
         [HttpPost("updateProfilePhoto")]
@@ -270,7 +290,25 @@ namespace Talent.Services.Profile.Controllers
         public async Task<ActionResult> UpdateProfilePhoto()
         {
             //Your code here;
-            throw new NotImplementedException();
+            try
+            {
+                IFormFile file = Request.Form.Files[0];
+                var userId = _userAppContext.CurrentUserId;
+                if (await _profileService.UpdateTalentPhoto(userId, file))
+                {
+                    return Json(new { Success = true });
+                }
+                else
+                {
+                    return Json(new { Success = false });
+                }
+            }
+            catch (Exception e)
+            {
+                return Json(new { Success = false, Message = e.Message });
+            }
+
+            //throw new NotImplementedException();
         }
 
         [HttpPost("updateTalentCV")]

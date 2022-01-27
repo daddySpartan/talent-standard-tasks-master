@@ -9,7 +9,7 @@ import {Skill} from './Skill.jsx';
 import Education from './Education.jsx';
 import Certificate from './Certificate.jsx';
 import {VisaStatus} from './VisaStatus.jsx'
-import PhotoUpload from './PhotoUpload.jsx';
+import {PhotoUpload} from './PhotoUpload.jsx';
 import VideoUpload from './VideoUpload.jsx';
 import CVUpload from './CVUpload.jsx';
 import {SelfIntroduction} from './SelfIntroduction.jsx';
@@ -39,7 +39,8 @@ export default class AccountProfile extends React.Component {
                 //certifications: [],
                 visaStatus: '',
                 visaExpiryDate: '',
-                //profilePhoto: '',
+                profilePhoto: '',
+                profilePhotoUrl: '',
                 linkedAccounts: {
                     linkedIn: "",
                     gitHub: ""
@@ -284,18 +285,19 @@ export default class AccountProfile extends React.Component {
                                                 componentId="jobSeekingStatus"
                                             />
                                         </FormItemWrapper>
-                                        {/*<FormItemWrapper
+                                        <FormItemWrapper
                                             title='Profile Photo'
                                             tooltip='Please upload your profile photo'
-                                            hideSegment={true}
+                                            //hideSegment={true}
                                         >
                                             <PhotoUpload
                                                 imageId={this.state.profileData.profilePhotoUrl}
+                                                imagePhoto={this.state.profileData.profilePhoto}
                                                 updateProfileData={this.updateWithoutSave}
                                                 savePhotoUrl='http://localhost:60290/profile/profile/updateProfilePhoto'
                                             />
                                         </FormItemWrapper>
-                                        <FormItemWrapper
+                                        {/*<FormItemWrapper
                                             title='Education'
                                             tooltip='Add your educational background'
                                         >

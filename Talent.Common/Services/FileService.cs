@@ -13,34 +13,101 @@ namespace Talent.Common.Services
 {
     public class FileService : IFileService
     {
-        private readonly IHostingEnvironment _environment;
-        private readonly string _tempFolder;
+        //private readonly IHostingEnvironment _environment;
+        private readonly string _bucketName;
         private IAwsService _awsService;
+        private AwsOptions _options;
 
         public FileService(IHostingEnvironment environment, 
             IAwsService awsService)
         {
-            _environment = environment;
-            _tempFolder = "images\\";
+            //_environment = environment;
+            _bucketName = "mytalentmodule1bucket";
             _awsService = awsService;
         }
 
         public async Task<string> GetFileURL(string id, FileType type)
         {
             //Your code here;
-            throw new NotImplementedException();
+
+            var path = "";
+            //var uniqueId = "";
+
+            /*if (string.IsNullOrWhiteSpace(_environment.WebRootPath))
+            {
+                _environment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "\\");
+            }*/
+
+            //string pathWeb = this._environment.WebRootPath;
+
+            if (id != "" && type == FileType.ProfilePhoto)
+            {
+
+                //String pathValue = pathWeb + _tempFolder;
+                //uniqueId = pathValue + id;
+                path = await _awsService.GetPresignedUrlObject(id, _bucketName);
+                Console.WriteLine(path);
+            }
+            return path;
+
+            //throw new NotImplementedException();
         }
 
         public async Task<string> SaveFile(IFormFile file, FileType type)
         {
             //Your code here;
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+           string path = "";
+
+            string pathWeb = "";
+
+           // pathWeb = _environment.WebRootPath;
+
+            if (file != null && type == FileType.ProfilePhoto)
+
+            {
+
+                //string pathValue = pathWeb + _tempFolder;
+
+                //uniqueFileName = $@"{DateTime.Now.Ticks}_" + file.FileName;
+                path = file.FileName;
+                //var path = uniqueFileName;
+
+                using (var fileStream = new FileStream(path, FileMode.Create))
+
+                {
+
+                    await file.CopyToAsync(fileStream);
+
+                    if (!await _awsService.PutFileToS3(path, fileStream, _bucketName))
+
+                    {
+
+                        path = "";
+
+                    }
+
+                }
+
+            }
+
+            return path;
+
+
         }
 
         public async Task<bool> DeleteFile(string id, FileType type)
         {
             //Your code here;
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            try
+            {
+                return await _awsService.RemoveFileFromS3(id, _bucketName);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
 
