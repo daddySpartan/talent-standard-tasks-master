@@ -1,100 +1,66 @@
 ﻿/* Self introduction section */
-import React, { Component } from "react";
+import React, { Component } from 'react';
+import Cookies from 'js-cookie';
+import { ChildSingleInput } from '../Form/SingleInput.jsx';
 
-export class SelfIntroduction extends Component {
+export default class SelfIntroduction extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
 
-        const details = props.profile ?             
-        Object.assign({}, props.details)
-        : {
-            summary: "",
-            description: "",
+        this.handleChange = this.handleChange.bind(this);
+        this.saveDescription = this.saveDescription.bind(this);
+    };
+
+    handleChange(event) {
+        const profileData = { [event.target.name]: event.target.value };
+
+        this.props.updateWithoutSave(profileData);
+    }
+
+    saveDescription() {
+        if (this.props.description.length < 150 && this.props.description.length > 0) {
+            TalentUtil.notification.show("Description must be empty or greater than 150 characters", "error", null, null)
+            return;
         }
 
+        const profileData = {
+            summary: this.props.summary,
+            description: this.props.description
+        };
 
-        this.state = {
-            newProfile: details,
-            summchar: 0,
-            descchar: 0,
-        }
-
-        this.saveData = this.saveData.bind(this);
-        this.updateSummary = this.updateSummary.bind(this);
-        this.updateDescription = this.updateDescription.bind(this);
+        this.props.updateProfileData(profileData);
     }
-
-
-
-    updateSummary(event) {
-        console.log(this.state.newProfile)
-        const data = Object.assign({}, this.state.newProfile)
-        data[event.target.name] = event.target.value
-        this.setState({
-            newProfile: data
-        })
-        this.props.updateWithoutSave(data)
-    }
-
-    updateDescription(event) {
-        console.log(this.state.newProfile)
-        const data = Object.assign({}, this.state.newProfile)
-        data[event.target.name] = event.target.value
-        this.setState({
-            newProfile: data
-        })
-        this.props.updateWithoutSave(data)
-    }
-
-
-    saveData() {
-        console.log(this.state.newProfile)
-        const data = Object.assign({}, this.state.newProfile)
-        this.props.updateProfileData(data)
-    }
-
-    dataOrNoData(option) {
-        switch(option) {
-            case 'summary':
-                let summary = this.props.details.summary ? this.props.details.summary : "Please provide a short summary of yourself";
-                return summary;
-            case 'description' :
-                let description = this.props.details.description ? this.props.details.description : "Please tell us about any hobbies, additional expertise, or anything else you’d like to add.";
-                return description;                      
-        }
-
-    }
-
 
     render() {
-
-        const summaryLimit = 150;
-        const descLimit = 600;
-        let summchar = this.props.details.summary ? this.props.details.summary.length : 0;
-        let descchar = this.props.details.description ? this.props.details.description.length : 0;
-
         return (
-            <React.Fragment>
-               
-                <div className="sixteen wide column">
-                    <div className="field" >
-                        <textarea maxLength={summaryLimit} name="summary" placeholder={this.dataOrNoData('summary')} value={this.state.newProfile.summary} onChange={this.updateSummary} ></textarea>
-                    </div>
-                    <p>Summary must be no more than 150 character. Characters remaining : {summchar} / {summaryLimit}</p>
+            <div className="ui sixteen wide column">
+                <ChildSingleInput
+                    inputType="text"
+                    label="Summary"
+                    name="summary"
+                    value={this.props.summary}
+                    controlFunc={this.handleChange}
+                    maxLength={150}
+                    placeholder="Please enter a short summary about yourself"
+                    errorMessage=""
+                />
+                <p>Summary must be no more than 150 characters.</p>
+                <div className='field'>
+                    <label>Description</label>
+                    <textarea
+                        name='description'
+                        maxLength={600}
+                        placeholder="Please tell us about any hobbies, additional expertise, or anything else you'd like to add"
+                        value={this.props.description}
+                        onChange={this.handleChange}
+                    />
                 </div>
-
-                <div className="sixteen wide column">
-                    <div className="field" >
-                        <textarea minLength = {summaryLimit} maxLength={descLimit} name="description" placeholder={this.dataOrNoData('description')} value={this.state.newProfile.description} onChange={this.updateDescription} ></textarea>
-                    </div>
-                    <p>Description must be between 150-600 characters. Characters remaining : {descchar} / {descLimit}</p>
-                    <button type="button" className="ui right floated teal button" onClick={this.saveData}>Save</button>
-                </div>
-              
-            </React.Fragment>
-
-        )
-   
+                <p>Description must be between 150-600 characters.</p>
+                <button type='button' className='ui right floated teal button' onClick={this.saveDescription}>Save</button>
+            </div>
+        );
     }
-
 }
+
+
+

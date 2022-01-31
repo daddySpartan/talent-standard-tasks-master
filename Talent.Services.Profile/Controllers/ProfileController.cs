@@ -86,32 +86,13 @@ namespace Talent.Services.Profile.Controllers
 
         #region Talent
 
-        [HttpGet("getTalentProfile")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public async Task<IActionResult> GetTalentProfile(String id = "")
-        {
-
-            try
-            {
-                //string userId = _userAppContext.CurrentUserId;
-                string userId = String.IsNullOrWhiteSpace(id) ? _userAppContext.CurrentUserId : id;
-                var userProfile = await _profileService.GetTalentProfile(userId);
-
-                return Json(new { Success = true, user = userProfile });
-            }
-            catch (Exception e)
-            {
-                return Json(new { Success = false, message = e });
-            }
-        }
-
         [HttpGet("getProfile")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
         public async Task<IActionResult> GetProfile()
         {
             var userId = _userAppContext.CurrentUserId;
             var user = await _userRepository.GetByIdAsync(userId);
-            return Json(new { Success=true, Username = user });
+            return Json(new { Username = user.FirstName });
         }
 
         [HttpGet("getProfileById")]
@@ -152,20 +133,12 @@ namespace Talent.Services.Profile.Controllers
             }
         }
 
-        [HttpGet("getLanguages")]
+        [HttpGet("getLanguage")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
         public async Task<IActionResult> GetLanguages()
         {
-            try
-            {
-                var userId = _userAppContext.CurrentUserId;
-                var result = await _profileService.GetLanguages(userId);
-                return Json(new { Success = true, languages = result });
-            }
-            catch (MongoException e)
-            {
-                return Json(new { Success = false, e.Message });
-            }
+            //Your code here;
+            throw new NotImplementedException();
         }
 
         [HttpPost("addLanguage")]
@@ -260,55 +233,26 @@ namespace Talent.Services.Profile.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public ActionResult getProfileImage(string Id)
         {
-            //var profileUrl = _documentService.GetFileURL(Id, FileType.ProfilePhoto);
+            var profileUrl = _documentService.GetFileURL(Id, FileType.ProfilePhoto);
             //Please do logic for no image available - maybe placeholder would be fine
-            try
-            {
-                var profileUrl = _documentService.GetFileURL(Id, FileType.ProfilePhoto);
-                //Please do logic for no image available - maybe placeholder would be fine
-
-                if (profileUrl != null)
-                {
-                    return Json(new { profilePath = profileUrl });
-                }
-                else
-                {
-                    return Json(new { Success = false });
-                }
-
-            }
-            catch (Exception e)
-            {
-                return Json(new { Success = false, Message = e.Message });
-            }
-
-            //return Json(new { profilePath = profileUrl });
+            return Json(new { profilePath = profileUrl });
         }
 
         [HttpPost("updateProfilePhoto")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
         public async Task<ActionResult> UpdateProfilePhoto()
         {
-            //Your code here;
-            try
+            // My code here.
+            IFormFile photo = Request.Form.Files.GetFile("photo");
+            if (photo.ContentType.StartsWith("image/"))
             {
-                IFormFile file = Request.Form.Files[0];
-                var userId = _userAppContext.CurrentUserId;
-                if (await _profileService.UpdateTalentPhoto(userId, file))
+                if (await _profileService.UpdateTalentPhoto(_userAppContext.CurrentUserId, photo))
                 {
-                    return Json(new { Success = true });
+                    return Json(new { success = true });
                 }
-                else
-                {
-                    return Json(new { Success = false });
-                }
-            }
-            catch (Exception e)
-            {
-                return Json(new { Success = false, Message = e.Message });
             }
 
-            //throw new NotImplementedException();
+            return Json(new { success = false });
         }
 
         [HttpPost("updateTalentCV")]
@@ -473,15 +417,15 @@ namespace Talent.Services.Profile.Controllers
 
         #region TalentFeed
 
-       /* [HttpGet("getTalentProfile")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent,recruiter,employer")]
+        [HttpGet("getTalentProfile")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent, employer, recruiter")]
         public async Task<IActionResult> GetTalentProfile(String id = "")
         {
             String talentId = String.IsNullOrWhiteSpace(id) ? _userAppContext.CurrentUserId : id;
             var userProfile = await _profileService.GetTalentProfile(talentId);
           
             return Json(new { Success = true, data = userProfile });
-        }*/
+        }
 
         [HttpPost("updateTalentProfile")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
@@ -506,21 +450,21 @@ namespace Talent.Services.Profile.Controllers
                 var result = (await _profileService.GetTalentSnapshotList(_userAppContext.CurrentUserId, false, feed.Position, feed.Number)).ToList();
 
                 // Dummy talent to fill out the list once we run out of data
-                //if (result.Count == 0)
-                //{
-                //    result.Add(
-                //            new Models.TalentSnapshotViewModel
-                //            {
-                //                CurrentEmployment = "Software Developer at XYZ",
-                //                Level = "Junior",
-                //                Name = "Dummy User...",
-                //                PhotoId = "",
-                //                Skills = new List<string> { "C#", ".Net Core", "Javascript", "ReactJS", "PreactJS" },
-                //                Summary = "Veronika Ossi is a set designer living in New York who enjoys kittens, music, and partying.",
-                //                Visa = "Citizen"
-                //            }
-                //        );
-                //}
+                if (result.Count == 0)
+                {
+                    result.Add(
+                            new Models.TalentSnapshotViewModel
+                            {
+                                CurrentEmployment = "Software Developer at XYZ",
+                                Level = "Junior",
+                                Name = "Dummy User...",
+                                PhotoId = "",
+                                Skills = new List<string> { "C#", ".Net Core", "Javascript", "ReactJS", "PreactJS" },
+                                Summary = "Veronika Ossi is a set designer living in New York who enjoys kittens, music, and partying.",
+                                Visa = "Citizen"
+                            }
+                        );
+                }
                 return Json(new { Success = true, Data = result });
             }
             catch (Exception e)

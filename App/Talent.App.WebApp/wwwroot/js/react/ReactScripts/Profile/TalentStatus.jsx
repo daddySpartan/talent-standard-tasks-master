@@ -4,81 +4,70 @@ import { Form, Checkbox } from 'semantic-ui-react';
 export default class TalentStatus extends React.Component {
     constructor(props) {
         super(props);
-        const jobseekstatus = props.status ?
-          Object.assign({}, props.status) : { status: "",  }            
-        this.state = {
-            value : jobseekstatus,                      
-        }
-        this.handleChange = this.handleChange.bind(this)
-       
+
+        this.handleChange = this.handleChange.bind(this);
     }
 
-    handleChange(event,value) {
-        var data = Object.assign({}, this.state.value)
-        const name = value.name;
-        let status = value.value;  
-
-        data[name] = status           
-        this.setState({
-            value: data
-        })
-        this.props.controlFunc(this.props.componentId, data)
-    }    
-    
+    handleChange(event) {
+        const jobStatus = Object.assign({}, this.props.jobStatus, { status: event.target.value });
+        this.props.saveProfileData({ jobSeekingStatus: jobStatus });
+    }
 
     render() {
         return (
-            <React.Fragment>
-            <div className="sixteen wide column">
-            <Form>
-              <Form.Field>
-                <b>Current Status</b>
-              </Form.Field>
-              <Form.Field>
-                <Checkbox
-                  radio
-                  label='Actively looking for a job'
-                  name='status'
-                  value='Actively looking for a job'
-                  checked={this.props.status.status === 'Actively looking for a job'}
-                  onClick={this.handleChange}
-                />
-              </Form.Field>
-              <Form.Field>
-                <Checkbox
-                  radio
-                  label='Not looking for a job at the moment'
-                  name='status'
-                  value='Not looking for a job at the moment'
-                  checked={this.props.status.status === 'Not looking for a job at the moment'}
-                  onClick={this.handleChange}
-                />
-              </Form.Field>
-              <Form.Field>
-                <Checkbox
-                  radio
-                  label='Currently employed but open to offers'
-                  name='status'
-                  value='Currently employed but open to offers'
-                  checked={this.props.status.status === 'Currently employed but open to offers'}
-                  onClick={this.handleChange}
-                />
-              </Form.Field>
-              <Form.Field>
-                <Checkbox
-                  radio
-                  label='Will be available on later date'
-                  name='status'
-                  value='Will be available on later date'
-                  checked={this.props.status.status === 'Will be available on later date'}
-                  onClick={this.handleChange}
-                />
-              </Form.Field>
-            </Form>
+            <div className='ui sixteen wide column'>
+                <div className='field'>
+                    <label>Current Status</label>
+                </div>
+                <div className='field'>
+                    <div className='ui radio checkbox'>
+                        <input
+                            type='radio'
+                            name='jobSeekingStatus'
+                            value='active'
+                            onChange={this.handleChange}
+                            checked={this.props.jobStatus.status === 'active'}
+                        />
+                        <label htmlFor='active'>Actively looking for a job</label>
+                    </div>
+                </div>
+                <div className='field'>
+                    <div className='ui radio checkbox'>
+                        <input
+                            type='radio'
+                            name='jobSeekingStatus'
+                            value='inactive'
+                            onChange={this.handleChange}
+                            checked={this.props.jobStatus.status === 'inactive'}
+                        />
+                        <label htmlFor='inactive'>Not looking for a job at the moment</label>
+                    </div>
+                </div>
+                <div className='field'>
+                    <div className='ui radio checkbox'>
+                        <input
+                            type='radio'
+                            name='jobSeekingStatus'
+                            value='employed'
+                            onChange={this.handleChange}
+                            checked={this.props.jobStatus.status === 'employed'}
+                        />
+                        <label htmlFor='employed'>Currently employed but open to offers</label>
+                    </div>
+                </div>
+                <div className='field'>
+                    <div className='ui radio checkbox'>
+                        <input
+                            type='radio'
+                            name='jobSeekingStatus'
+                            value='later'
+                            onChange={this.handleChange}
+                            checked={this.props.jobStatus.status === 'later'}
+                        />
+                        <label htmlFor='later'>Will be available on later date</label>
+                    </div>
+                </div>
             </div>
-            </React.Fragment>
-
-        )
-              
+        );
     }
 }

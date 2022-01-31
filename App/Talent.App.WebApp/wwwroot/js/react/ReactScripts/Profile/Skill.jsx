@@ -1,144 +1,325 @@
 ﻿/* Skill section */
 import React from 'react';
-import AddSkill from './AddSkill.jsx';
-import EditSkill from './EditSkill.jsx';
+import Cookies from 'js-cookie';
+import { SingleInput } from '../Form/SingleInput.jsx';
+import { Select } from '../Form/Select.jsx';
+import { ItemSlide } from '../Form/ItemSlide.jsx';
+import PropTypes from 'prop-types';
+import { Popup } from 'semantic-ui-react';
 
-export class Skill extends React.Component {
+// Potential skill proficiency levels.
+const skillLevels = [
+    { value: 'Beginner', title: 'Beginner' },
+    { value: 'Intermediate', title: 'Intermediate' },
+    { value: 'Expert', title: 'Expert' }
+];
+
+export default class Skill extends React.Component {
     constructor(props) {
-        super(props);       
+        super(props);
+
         this.state = {
-            showAdd: false,
-            showEdit: false,
-            keyId: 0
-        }
-        this.openAdd = this.openAdd.bind(this)
-        this.closeAdd = this.closeAdd.bind(this)
-        this.openEdit = this.openEdit.bind(this)
-        this.closeEdit = this.closeEdit.bind(this)
-        this.updateSkill = this.updateSkill.bind(this)
-        this.addSkill = this.addSkill.bind(this)
-        this.deleteSkill = this.deleteSkill.bind(this)
-    }
-
-    openAdd () {
-        this.setState({
-            showAdd: true,
-        })
-        //console.log(this.props.skillData)
-    }
-
-    closeAdd () {
-        this.setState({
-            showAdd: false
-        })
-    }
-
-    openEdit (currentid) {
-        this.setState({
-            showEdit: true,
-            keyId: currentid,
-        })
-    }
-
-    closeEdit () {
-        this.setState({
-            showEdit: false,
-            keyId: 0
-        })
-    }
-
-   addSkill(newSkill)  {
-        const list = this.props.skillData ? [...this.props.skillData, newSkill] : [newSkill];
-        this.props.controlFunc(this.props.componentId, list)
-        this.closeAdd()
-        
-    }
-
-    updateSkill (newSkill,idSkill) {
-        const list = this.props.skillData.map((item) => {
-            if (item.id === idSkill) {
-              return newSkill;
-            } else {             
-              return item;
+            showAddSection: false,
+            showAddForm: false,
+            newSkill: {
+                name: '',
+                level: ''
             }
-          });
-        this.props.controlFunc(this.props.componentId,list)  
-        this.closeEdit()
+        };
 
+        this.openAdd = this.openAdd.bind(this);
+        this.closeAdd = this.closeAdd.bind(this);
+        this.hideAdd = this.hideAdd.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.editSkill = this.editSkill.bind(this);
+        this.deleteSkill = this.deleteSkill.bind(this);
+        this.saveSkill = this.saveSkill.bind(this);
     }
 
-    deleteSkill (idSkill) {
-        const list = this.props.skillData.filter((item) => item.id !== idSkill);  
-        this.props.controlFunc(this.props.componentId,list)     
-        this.closeEdit()
-
+    openAdd() {
+        this.setState({
+            showAddSection: true,
+            showAddForm: true
+        });
     }
 
+    closeAdd() {
+        // Also reset newSkill to defaults so it's ready for future adds.
+        this.setState({
+            showAddForm: false,
+            newSkill: {
+                name: '',
+                level: ''
+            }
+        });
+    }
+
+    hideAdd() {
+        this.setState({
+            showAddSection: false
+        });
+    }
+
+    handleChange(event) {
+        const skill = Object.assign({}, this.state.newSkill);
+        skill[event.target.name] = event.target.value;
+
+        this.setState({ newSkill: skill });
+    }
+
+    editSkill(skill) {
+        const editedskill = this.props.skillData.map(value => {
+            if (value.id === skill.id) {
+                return skill;
+            } else {
+                return value;
+            }
+        });
+
+        const profileData = {
+            skills: editedskill
+        };
+
+        this.props.updateProfileData(profileData);
+    }
+
+    deleteSkill(skill) {
+        const editedskill = this.props.skillData.filter(value => {
+            return value.id !== skill.id;
+        });
+
+        const profileData = {
+            skills: editedskill
+        };
+
+        this.props.updateProfileData(profileData);
+    }
+
+    saveSkill() {
+        const profileData = {
+            skills: [...this.props.skillData, this.state.newSkill]
+        };
+
+        this.props.updateProfileData(profileData, true);
+        this.closeAdd();
+    }
 
     render() {
-        const list = this.props.skillData
-        const {keyId,showEdit} = this.state
+        return (
+            <React.Fragment>
+                {this.state.showAddSection && (
+                    <ItemSlide isOpen={this.state.showAddForm} slideIn duration={'500ms'} onClose={this.hideAdd} >
+                        <div className='ui row-padded'>
+                            <SkillAddForm
+                                name={this.state.newSkill.name}
+                                level={this.state.newSkill.level}
+                                controlFunc={this.handleChange}
+                                save={this.saveSkill}
+                                cancel={this.closeAdd}
+                            />
+                        </div>
+                    </ItemSlide>
+                )}
+                <div className='ui sixteen wide column'>
+                    <table className='ui fixed table'>
+                        <thead>
+                            <tr>
+                                <th>
+                                    Skill
+                                </th>
+                                <th>
+                                    Level
+                                </th>
+                                <th>
+                                    <button type='button' className='ui right floated button' onClick={this.openAdd}>
+                                        <i className='icon add' /> Add New
+                                </button>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {this.props.skillData.map(skill =>
+                                <SkillItem
+                                    key={skill.id}
+                                    skillData={skill}
+                                    updateSkill={this.editSkill}
+                                    deleteSkill={this.deleteSkill}
+                                />
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </React.Fragment>
+        );
 
-        if (!list) {
-        return (
-            <React.Fragment>
-                
-                <AddSkill showAdd={this.state.showAdd} closeAdd={this.closeAdd} addSkill={this.addSkill}/>
-                <div className="sixteen wide column">
-                
-                <table className="ui single line table">
-                    <thead className="">
-                        <tr className="">
-                        <th className="">Skill</th>
-                        <th className="">Level</th>
-                        <th className=""><button type="button" className="ui right floated black button" onClick={this.openAdd}>+ Add New</button> </th>
-                        </tr>
-                    </thead>
-                </table>
-                </div>
-            </React.Fragment>
-        )
-        }
-        return (
-            <React.Fragment>
-                
-                <AddSkill showAdd={this.state.showAdd} closeAdd={this.closeAdd} addSkill={this.addSkill}/>
-                <div className="sixteen wide column">
-                
-                <table className="ui single line table">
-                    <thead className="">
-                        <tr className="">
-                        <th className="">Skill</th>
-                        <th className="">Level</th>
-                        <th className=""><button type="button" className="ui right floated black button" onClick={this.openAdd}>+ Add New</button> </th>
-                        </tr>
-                    </thead>
-                    <tbody className="">
-                        {list.map((s) => {
-                            return showEdit && keyId === s.id ? 
-                            <EditSkill showEdit={showEdit} closeEdit={this.closeEdit} updateSkill={this.updateSkill} currentSkill={s}/>
-                            :
-                            (
-                            <tr className="" key={s.id}>
-                                <td className="">{s.skill ? s.skill : "dummy"}</td>
-                                <td className="">{s.experienceLevel ? s.experienceLevel : "data"}</td>
-                                <td className="">
-                                    <button type="button" className="ui right floated icon button">
-                                        <i className="close icon" onClick={()=>this.deleteSkill(s.id)}></i>  
-                                    </button>
-                                    <button type="button" className="ui right floated icon button" > 
-                                        <i className="pencil icon" onClick={()=>this.openEdit(s.id)}></i>
-                                    </button>
-                                    
-                                </td>                   
-                            </tr>    
-                            );                                            
-                        })}
-                    </tbody>        
-                </table>
-                </div>
-            </React.Fragment>
-        )
-        
     }
+}
+
+class SkillItem extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            showEditForm: false,
+            name: '',
+            level: ''
+        }
+
+        this.openEdit = this.openEdit.bind(this);
+        this.closeEdit = this.closeEdit.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.saveEdit = this.saveEdit.bind(this);
+        this.deleteSkill = this.deleteSkill.bind(this);
+    }
+
+    openEdit() {
+        this.setState({
+            showEditForm: true,
+            name: this.props.skillData.name,
+            level: this.props.skillData.level
+        });
+    }
+
+    closeEdit() {
+        this.setState({
+            showEditForm: false
+        });
+    }
+
+    handleChange(event) {
+        this.setState({ [event.target.name]: event.target.value });
+    }
+
+    saveEdit() {
+        const skill = {
+            id: this.props.skillData.id,
+            name: this.state.name,
+            level: this.state.level
+        };
+
+        this.props.updateSkill(skill);
+
+        this.closeEdit();
+    }
+
+    deleteSkill() {
+        let skill = Object.assign({}, this.props.skillData);
+
+        this.props.deleteSkill(skill);
+
+        this.closeEdit();
+    }
+
+    render() {
+        return this.state.showEditForm ? this.renderEdit() : this.renderDisplay();
+    }
+
+    renderEdit() {
+        return (
+            <tr>
+                <td colSpan='3'>
+                    <SkillEditForm
+                        name={this.state.name}
+                        level={this.state.level}
+                        controlFunc={this.handleChange}
+                        save={this.saveEdit}
+                        cancel={this.closeEdit}
+                    />
+                </td>
+            </tr>
+        );
+    }
+
+    renderDisplay() {
+        return (
+            <tr>
+                <td>{this.props.skillData.name}</td>
+                <td>{this.props.skillData.level}</td>
+                <td className='right aligned'>
+                    <i className='icon write' onClick={this.openEdit} />
+                    <Popup
+                        trigger={<i className='icon delete' />}
+                        content={<button type='button' className='ui negative button' onClick={this.deleteSkill}>Delete</button>}
+                        on='click'
+                        position='top center'
+                    />
+                </td>
+            </tr>
+        );
+    }
+}
+
+SkillItem.propTypes = {
+    skillData: PropTypes.shape({
+        id: PropTypes.string,
+        name: PropTypes.string,
+        level: PropTypes.string
+    }).isRequired,
+    updateSkill: PropTypes.func.isRequired
+};
+
+function SkillAddForm(props) {
+    return (
+        <div className='ui grid'>
+            <div className='ui five wide column'>
+                <SingleInput
+                    inputType='text'
+                    placeholder='Add Skill'
+                    name='name'
+                    content={props.name}
+                    controlFunc={props.controlFunc}
+                    errorMessage='Please enter a valid skill'
+                    isError={false}
+                />
+            </div>
+            <div className='ui five wide column'>
+                <Select
+                    name='level'
+                    placeholder='Skill Level'
+                    selectedOption={props.level}
+                    controlFunc={props.controlFunc}
+                    options={skillLevels}
+                />
+            </div>
+            <div className='ui six wide column'>
+                <button type='button' className='ui teal button' onClick={props.save}>
+                    Add
+                </button>
+                <button type='button' className='ui button' onClick={props.cancel}>
+                    Cancel
+                </button>
+            </div>
+        </div>
+    );
+}
+
+function SkillEditForm(props) {
+    return (
+        <div className='ui grid'>
+            <div className='ui five wide column'>
+                <SingleInput
+                    inputType='text'
+                    placeholder='Add Skill'
+                    name='name'
+                    content={props.name}
+                    controlFunc={props.controlFunc}
+                    errorMessage='Please enter a valid skill'
+                    isError={false}
+                />
+            </div>
+            <div className='ui five wide column'>
+                <Select
+                    name='level'
+                    placeholder='Skill Level'
+                    selectedOption={props.level}
+                    controlFunc={props.controlFunc}
+                    options={skillLevels}
+                />
+            </div>
+            <div className='ui six wide column'>
+                <button type='button' className='ui primary basic button' onClick={props.save}>Update</button>
+                <button type='button' className='ui negative basic button' onClick={props.cancel}>Cancel</button>
+            </div>
+        </div>
+    );
 }

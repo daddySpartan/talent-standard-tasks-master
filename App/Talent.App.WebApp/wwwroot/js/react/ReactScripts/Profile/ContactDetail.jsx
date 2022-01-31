@@ -26,7 +26,6 @@ export class IndividualDetailSection extends Component {
         this.saveContact = this.saveContact.bind(this)
         this.renderEdit = this.renderEdit.bind(this)
         this.renderDisplay = this.renderDisplay.bind(this)
-        this.dataOrNoData = this.dataOrNoData.bind(this)
     }
 
     openEdit() {
@@ -55,27 +54,8 @@ export class IndividualDetailSection extends Component {
         console.log(this.props.componentId)
         console.log(this.state.newContact)
         const data = Object.assign({}, this.state.newContact)
-        if (this.props.componentId==='talentprofile') {this.props.saveProfileData(data) } else { this.props.controlFunc(this.props.componentId, data)}
+        this.props.controlFunc(this.props.componentId, data)
         this.closeEdit()
-    }
-
-    dataOrNoData(option) {
-        switch(option) {
-            case 'firstname':
-                let firstname = this.props.details ? this.props.details.firstName : "Enter your first name";
-                return firstname;
-            case 'lastname' :
-                let lastname = this.props.details ? this.props.details.lastName : "Enter your last name";
-                return lastname;
-            case 'email' :
-                let email = this.props.details ? this.props.details.email : "Enter an email";
-                return email;
-            case 'phone' :
-                let phone = this.props.details ? this.props.details.phone : "Enter a phone number";
-                return phone;
-                       
-        }
-
     }
 
     render() {
@@ -94,7 +74,7 @@ export class IndividualDetailSection extends Component {
                     value={this.state.newContact.firstName}
                     controlFunc={this.handleChange}
                     maxLength={80}
-                    placeholder={this.dataOrNoData('firstname')}
+                    placeholder="Enter your first name"
                     errorMessage="Please enter a valid first name"
                 />
                 <ChildSingleInput
@@ -104,7 +84,7 @@ export class IndividualDetailSection extends Component {
                     value={this.state.newContact.lastName}
                     controlFunc={this.handleChange}
                     maxLength={80}
-                    placeholder={this.dataOrNoData('lastname')}
+                    placeholder="Enter your last name"
                     errorMessage="Please enter a valid last name"
                 />
                 <ChildSingleInput
@@ -114,7 +94,7 @@ export class IndividualDetailSection extends Component {
                     value={this.state.newContact.email}
                     controlFunc={this.handleChange}
                     maxLength={80}
-                    placeholder={this.dataOrNoData('email')}
+                    placeholder="Enter an email"
                     errorMessage="Please enter a valid email"
                 />
 
@@ -125,7 +105,7 @@ export class IndividualDetailSection extends Component {
                     value={this.state.newContact.phone}
                     controlFunc={this.handleChange}
                     maxLength={12}
-                    placeholder={this.dataOrNoData('phone')}
+                    placeholder="Enter a phone number"
                     errorMessage="Please enter a valid phone number"
                 />
 

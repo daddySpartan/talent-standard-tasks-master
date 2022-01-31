@@ -1,79 +1,100 @@
 ﻿/* Social media JSX */
-import React, { Component } from "react";
+import React from 'react';
 import { ChildSingleInput } from '../Form/SingleInput.jsx';
-import { Popup, Label, Icon } from 'semantic-ui-react';
+import { Popup } from 'semantic-ui-react';
 
-
-export default class SocialMediaLinkedAccount extends Component {
+export default class SocialMediaLinkedAccount extends React.Component {
     constructor(props) {
-        super(props)
-        const details = props.details ?
-            Object.assign({}, props.details)
-            : {
-                github: "",
-                linkedIn: "",
-            }
+        super(props);
 
         this.state = {
             showEditSection: false,
-            newAccount: details
-        }
-        //console.log(details)
-        this.openEdit = this.openEdit.bind(this)
-        this.closeEdit = this.closeEdit.bind(this)
-        this.handleChange = this.handleChange.bind(this)
-        this.saveAccount = this.saveAccount.bind(this)
-        this.renderEdit = this.renderEdit.bind(this)
-        this.renderDisplay = this.renderDisplay.bind(this)
+            validLinkedIn: true,
+            validGitHub: true
+        };
 
-
+        this.openEdit = this.openEdit.bind(this);
+        this.closeEdit = this.closeEdit.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.saveLinkedAccounts = this.saveLinkedAccounts.bind(this);
     }
 
-   /* componentDidMount() {
+    componentDidMount() {
         $('.ui.button.social-media')
             .popup();
-    }*/
-
-    openEdit() {
-        const details = Object.assign({}, this.props.details)
-        this.setState({
-            showEditSection: true,
-            newAccount: details
-        })
     }
 
-    closeEdit(){
-        this.setState({
-            showEditSection: false
-        })
+    openEdit() {
+        this.setState({ showEditSection: true });
+    }
+
+    closeEdit() {
+        this.setState({ showEditSection: false });
     }
 
     handleChange(event) {
-        const data = Object.assign({}, this.state.newAccount)
-        data[event.target.name] = event.target.value
-        console.log(data)
+        let validLinkedIn = this.state.validLinkedIn;
+        let validGitHub = this.state.validGitHub;
+
+        switch (event.target.name) {
+            case 'linkedIn':
+                // A LinkedIn profile url must have between 3 and 100 letters or numbers. Taken from the site when you edit your custom URL.
+                // Accented characters are allowed which makes checking quite convoluted.
+                if (event.target.value && !/^https:\/\/(www.)?linkedin.com\/in\/.{3,100}\/?$/.test(event.target.value)) {
+                    validLinkedIn = false;
+                } else {
+                    validLinkedIn = true;
+                }
+
+                break;
+            case 'github':
+                // A GitHub profile url must have at least 1 alphanumeric character up to 39 maximum.
+                // Also allowed is single hyphens but not at the beginning or end.
+                // This RegExp will become quite large trying to follow the previous rule so we'll just allow hyphens anywhere.
+                if (event.target.value && !/^https:\/\/(www.)?github.com\/[a-zA-Z0-9\-]{1,39}\/?$/.test(event.target.value)) {
+                    validGitHub = false;
+                } else {
+                    validGitHub = true;
+                }
+
+                break;
+            default:
+                break;
+        }
+
+        // Update validation states so we can show errors.
         this.setState({
-            newAccount: data
-        })
+            validLinkedIn: validLinkedIn,
+            validGitHub: validGitHub
+        });
+
+        // We want linkedAccounts to be an innerobject just like how the AccountProfile state object has it.
+        const profileData = {
+            linkedAccounts: Object.assign({}, this.props.linkedAccounts)
+        };
+        profileData.linkedAccounts[event.target.name] = event.target.value;
+        this.props.updateProfileData(profileData);
     }
 
-    saveAccount() {
-        console.log(this.props.componentId)
-        console.log(this.state.newAccount)
-        const data = Object.assign({}, this.state.newAccount)
-        this.props.controlFunc(this.props.componentId, data)
-        console.log(data)
-        //this.props.saveProfileData(data)
-        this.closeEdit()
-    }
+    saveLinkedAccounts() {
+        const validLinkedIn = this.state.validLinkedIn;
+        const validGitHub = this.state.validGitHub;
 
+        if (!validLinkedIn || !validGitHub) {
+            TalentUtil.notification.show("Please enter valid LinkedIn and GitHub URLs", "error", null, null);
+        } else {
+            // We want linkedAccounts to be an innerobject just like how the AccountProfile state object has it.
+            const profileData = {
+                linkedAccounts: Object.assign({}, this.props.linkedAccounts)
+            };
+            profileData.linkedAccounts[event.target.name] = event.target.value;
+            this.props.saveProfileData(profileData);
+            this.closeEdit();
+        }
+    }
 
     render() {
-        return (
-            this.state.showEditSection ? this.renderEdit() : this.renderDisplay()
-        )
-
-
+        return this.state.showEditSection ? this.renderEdit() : this.renderDisplay();
     }
 
     renderEdit() {
@@ -81,60 +102,46 @@ export default class SocialMediaLinkedAccount extends Component {
             <div className='ui sixteen wide column'>
                 <ChildSingleInput
                     inputType="text"
-                    label="Git Hub"
-                    name="github"
-                    value={this.state.newAccount.github}
+                    label="LinkedIn"
+                    name="linkedIn"
+                    value={this.props.linkedAccounts.linkedIn}
                     controlFunc={this.handleChange}
                     maxLength={80}
-                    placeholder={this.state.newAccount.github ? this.state.newAccount.github :"Enter your GitHub address"}
-                    errorMessage="Please enter a valid GitHub address"
+                    placeholder="Enter your LinkedIn URL"
+                    isError={!this.state.validLinkedIn}
+                    errorMessage="Please enter a valid LinkedIn URL: https://www.linkedin.com/in/example"
                 />
                 <ChildSingleInput
                     inputType="text"
-                    label="Linked In"
-                    name="linkedIn"
-                    value={this.state.newAccount.linkedIn}
+                    label="GitHub"
+                    name="github"
+                    value={this.props.linkedAccounts.github}
                     controlFunc={this.handleChange}
                     maxLength={80}
-                    placeholder={this.state.newAccount.linkedIn ? this.state.newAccount.linkedIn : "Enter your LinkedIn address"}
-                    errorMessage="Please enter a valid LinkedIn address"
+                    placeholder="Enter your GitHub URL"
+                    isError={!this.state.validGitHub}
+                    errorMessage="Please enter a valid GitHub URL: https://www.github.com/example"
                 />
 
-                <button type="button" className="ui teal button" onClick={this.saveAccount}>Save</button>
-                <button type="button" className="ui button" onClick={this.closeEdit}>Cancel</button>
+                <button type="button" className="ui teal button" onClick={this.saveLinkedAccounts}>Save</button>
+                <button type='button' className='ui button' onClick={this.closeEdit}>Cancel</button>
             </div>
-        )
+        );
     }
 
-
-
-
-    renderDisplay()
-    {
-
-        let linkedIn = this.props.details ? this.props.details.linkedIn : ""
-        let github = this.props.details ? this.props.details.github : ""
-
-        //display dummy data
+    renderDisplay() {
         return (
-            <div className='row'>
-                <div className="ui sixteen wide column">
-                    <React.Fragment>
-                        <Label size = 'big' color = 'blue' as='a' href={linkedIn} target="_blank">
-                            <Icon name='linkedin' />
-                             LinkedIn
-                        </Label>
-                        <Label size = 'big' color = 'black' as='a' href={github} target="_blank">
-                            <Icon name='github' />
-                            GitHub
-                        </Label>
-                    </React.Fragment>
-                    <button type="button" className="ui right floated teal button" onClick={this.openEdit}>Edit</button>
-                </div>
+            <div className='ui sixteen wide column'>
+                <a className='ui linkedin button' href={this.props.linkedAccounts.linkedIn} >
+                    <i className='icon linkedin' /> LinkedIn
+                </a>
+                <a className='ui black button' href={this.props.linkedAccounts.github} >
+                    <i className='icon github' /> GitHub
+                </a>
+                <button type='button' className='ui right floated black button' onClick={this.openEdit}>
+                    Edit
+                </button>
             </div>
-        )
-
+        );
     }
-
-
 }

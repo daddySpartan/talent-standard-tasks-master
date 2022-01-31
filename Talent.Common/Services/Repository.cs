@@ -129,6 +129,7 @@ namespace Talent.Common.Services
             }
             throw new ApplicationException("Hit retry limit while trying to query MongoDB");
         }
+
     }
 
 
